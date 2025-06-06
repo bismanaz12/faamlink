@@ -11,12 +11,22 @@ class InternationalRelocationScreen extends StatefulWidget {
 
 class _InternationalRelocationScreenState
     extends State<InternationalRelocationScreen> {
-  String? selectedService;
   String? selectedRelocationType;
+  String? selectedFragileItems;
   DateTime? selectedDate;
   TimeOfDay? selectedTime;
+  bool? isSurveyNeeded = false;
 
-  // State for checkboxes
+  // Text controllers for input fields
+  final TextEditingController movingFromController = TextEditingController();
+  final TextEditingController movingToController = TextEditingController();
+  final TextEditingController mobileController = TextEditingController();
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController fragileItemsController = TextEditingController();
+  final TextEditingController cargoMediaController = TextEditingController();
+  final TextEditingController otherController = TextEditingController();
+
+  // State for checkboxes (for listing items)
   bool furniture = false;
   bool electronics = false;
   bool kitchenware = false;
@@ -26,7 +36,6 @@ class _InternationalRelocationScreenState
   bool books = false;
   bool personalItems = false;
   bool other = false;
-  final TextEditingController otherController = TextEditingController();
 
   Future<void> _selectDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
@@ -86,16 +95,16 @@ class _InternationalRelocationScreenState
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const Text(
-                'Form',
+                'International Relocation Form',
                 style: TextStyle(
                     color: Colors.black,
                     fontSize: 43,
                     fontWeight: FontWeight.w700),
               ),
-
               const SizedBox(height: 16),
+              // Step 1: Moving From (Area + City + Country)
               const Text(
-                'MOVING FROM (CITY & COUNTRY):',
+                'MOVING FROM (AREA + CITY + COUNTRY):',
                 style: TextStyle(
                     color: Colors.black,
                     fontWeight: FontWeight.w400,
@@ -103,6 +112,7 @@ class _InternationalRelocationScreenState
               ),
               const SizedBox(height: 8),
               TextFormField(
+                controller: movingFromController,
                 decoration: const InputDecoration(
                   border: OutlineInputBorder(
                     borderSide: BorderSide(color: Colors.grey),
@@ -113,8 +123,9 @@ class _InternationalRelocationScreenState
                 ),
               ),
               const SizedBox(height: 16),
+              // Step 2: Moving To (Area + City + Country)
               const Text(
-                'MOVING TO (CITY & COUNTRY):',
+                'MOVING TO (AREA + CITY + COUNTRY):',
                 style: TextStyle(
                     color: Colors.black,
                     fontWeight: FontWeight.w400,
@@ -122,6 +133,7 @@ class _InternationalRelocationScreenState
               ),
               const SizedBox(height: 8),
               TextFormField(
+                controller: movingToController,
                 decoration: const InputDecoration(
                   border: OutlineInputBorder(
                     borderSide: BorderSide(color: Colors.grey),
@@ -132,6 +144,48 @@ class _InternationalRelocationScreenState
                 ),
               ),
               const SizedBox(height: 16),
+              // Step 3: Mobile Number + Email Address
+              const Text(
+                'MOBILE NUMBER:',
+                style: TextStyle(
+                    color: Colors.black,
+                    fontWeight: FontWeight.w400,
+                    fontSize: 14),
+              ),
+              const SizedBox(height: 8),
+              TextFormField(
+                controller: mobileController,
+                keyboardType: TextInputType.phone,
+                decoration: const InputDecoration(
+                  border: OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.grey),
+                  ),
+                  contentPadding:
+                      EdgeInsets.symmetric(horizontal: 10, vertical: 15),
+                ),
+              ),
+              const SizedBox(height: 16),
+              const Text(
+                'EMAIL ADDRESS:',
+                style: TextStyle(
+                    color: Colors.black,
+                    fontWeight: FontWeight.w400,
+                    fontSize: 14),
+              ),
+              const SizedBox(height: 8),
+              TextFormField(
+                controller: emailController,
+                keyboardType: TextInputType.emailAddress,
+                decoration: const InputDecoration(
+                  border: OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.grey),
+                  ),
+                  contentPadding:
+                      EdgeInsets.symmetric(horizontal: 10, vertical: 15),
+                ),
+              ),
+              const SizedBox(height: 16),
+              // Step 4: Moving Date with Time
               Row(
                 children: [
                   Expanded(
@@ -139,7 +193,7 @@ class _InternationalRelocationScreenState
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         const Text(
-                          'DATE',
+                          'MOVING DATE:',
                           style: TextStyle(
                               color: Colors.black,
                               fontWeight: FontWeight.w400,
@@ -173,7 +227,7 @@ class _InternationalRelocationScreenState
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         const Text(
-                          'TIME',
+                          'MOVING TIME:',
                           style: TextStyle(
                               color: Colors.black,
                               fontWeight: FontWeight.w400,
@@ -204,80 +258,34 @@ class _InternationalRelocationScreenState
                 ],
               ),
               const SizedBox(height: 16),
+              // Step 5: List Down All Items (Cases)
               const Text(
-                'MOBILE NUMBER',
+                'LIST DOWN ALL ITEMS (CASES):',
                 style: TextStyle(
                     color: Colors.black,
                     fontWeight: FontWeight.w400,
                     fontSize: 14),
               ),
               const SizedBox(height: 8),
-              TextFormField(
-                keyboardType: TextInputType.phone,
-                decoration: const InputDecoration(
-                  border: OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.grey),
-                  ),
-                  contentPadding:
-                      EdgeInsets.symmetric(horizontal: 10, vertical: 15),
-                ),
-              ),
-              const SizedBox(height: 16),
-              const Text(
-                'RELOCATION TYPE:',
-                style: TextStyle(
-                    color: Colors.black,
-                    fontWeight: FontWeight.w400,
-                    fontSize: 14),
-              ),
-              const SizedBox(height: 8),
-              DropdownButtonFormField<String>(
-                decoration: const InputDecoration(
-                  border: OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.grey),
-                  ),
-                  contentPadding:
-                      EdgeInsets.symmetric(horizontal: 10, vertical: 15),
-                ),
-                value: selectedRelocationType,
-                hint: const Text('Select Relocation Type'),
-                items: ['Personal', 'Business', 'Family']
-                    .map((String value) => DropdownMenuItem<String>(
-                          value: value,
-                          child: Text(value),
-                        ))
-                    .toList(),
-                onChanged: (newValue) {
-                  setState(() {
-                    selectedRelocationType = newValue;
-                  });
-                },
-              ),
-              const SizedBox(height: 16),
-              const Text(
-                'LIST ALL ITEMS:',
-                style: TextStyle(
-                    color: Colors.black,
-                    fontWeight: FontWeight.w400,
-                    fontSize: 14),
-              ),
-              const SizedBox(height: 8),
-              // Responsive Wrap for Checkboxes
               Wrap(
                 spacing: 16.0,
                 runSpacing: 8.0,
                 children: [
-                  _buildCustomCheckbox('Furniture', furniture, (value) {
+                  _buildCustomCheckbox(
+                      'Furniture (Beds, Sofas, Tables)', furniture, (value) {
                     setState(() {
                       furniture = value!;
                     });
                   }),
-                  _buildCustomCheckbox('Electronics', electronics, (value) {
+                  _buildCustomCheckbox(
+                      'Electronics (TV, Computer, Speakers)', electronics,
+                      (value) {
                     setState(() {
                       electronics = value!;
                     });
                   }),
-                  _buildCustomCheckbox('Kitchenware', kitchenware, (value) {
+                  _buildCustomCheckbox(
+                      'Kitchenware (Utensils, Crockery)', kitchenware, (value) {
                     setState(() {
                       kitchenware = value!;
                     });
@@ -287,12 +295,16 @@ class _InternationalRelocationScreenState
                       clothing = value!;
                     });
                   }),
-                  _buildCustomCheckbox('Documents', documents, (value) {
+                  _buildCustomCheckbox(
+                      'Documents (Passports, Certificates)', documents,
+                      (value) {
                     setState(() {
                       documents = value!;
                     });
                   }),
-                  _buildCustomCheckbox('Appliances', appliances, (value) {
+                  _buildCustomCheckbox(
+                      'Appliances (Fridge, Microwave, Oven)', appliances,
+                      (value) {
                     setState(() {
                       appliances = value!;
                     });
@@ -302,8 +314,8 @@ class _InternationalRelocationScreenState
                       books = value!;
                     });
                   }),
-                  _buildCustomCheckbox('Personal Items', personalItems,
-                      (value) {
+                  _buildCustomCheckbox(
+                      'Personal Items (Jewelry, Toys)', personalItems, (value) {
                     setState(() {
                       personalItems = value!;
                     });
@@ -315,7 +327,7 @@ class _InternationalRelocationScreenState
                   }),
                 ],
               ),
-              if (other) // Show text field if "Other" is selected
+              if (other)
                 Padding(
                   padding: const EdgeInsets.only(top: 8.0),
                   child: TextFormField(
@@ -326,36 +338,165 @@ class _InternationalRelocationScreenState
                       ),
                       contentPadding:
                           EdgeInsets.symmetric(horizontal: 10, vertical: 15),
-                      hintText: 'Other',
+                      hintText: 'Specify Other Items',
                     ),
+                  ),
+                ),
+              const SizedBox(height: 16),
+              // Step 5 (cont.): List Down Fragile, Glass, or Any Unstackable Item
+              const Text(
+                'LIST DOWN FRAGILE, GLASS, OR ANY UNSTACKABLE ITEM:',
+                style: TextStyle(
+                    color: Colors.black,
+                    fontWeight: FontWeight.w400,
+                    fontSize: 14),
+              ),
+              const SizedBox(height: 8),
+              TextFormField(
+                controller: fragileItemsController,
+                decoration: const InputDecoration(
+                  border: OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.grey),
+                  ),
+                  contentPadding:
+                      EdgeInsets.symmetric(horizontal: 10, vertical: 15),
+                  hintText: 'Specify Fragile/Glass/Unstackable Items',
+                ),
+              ),
+              const SizedBox(height: 16),
+              // Step 7: Provide Cargo Pictures or Short Video (If Possible)
+              const Text(
+                'PROVIDE CARGO PICTURES OR SHORT VIDEO (IF POSSIBLE):',
+                style: TextStyle(
+                    color: Colors.black,
+                    fontWeight: FontWeight.w400,
+                    fontSize: 14),
+              ),
+              const SizedBox(height: 8),
+              TextFormField(
+                controller: cargoMediaController,
+                decoration: const InputDecoration(
+                  border: OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.grey),
+                  ),
+                  contentPadding:
+                      EdgeInsets.symmetric(horizontal: 10, vertical: 15),
+                  hintText: 'Provide links or descriptions (if possible)',
+                ),
+              ),
+              const SizedBox(height: 16),
+              // Step 8: Book a Survey or Get Competitive Quote
+              const Text(
+                'CHOOSE AN OPTION:',
+                style: TextStyle(
+                    color: Colors.black,
+                    fontWeight: FontWeight.w400,
+                    fontSize: 14),
+              ),
+              const SizedBox(height: 8),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const Text(
+                    'Not Sure? Book a Survey for Accurate & Competitive Quote',
+                    style: TextStyle(
+                        color: Colors.black,
+                        fontWeight: FontWeight.w400,
+                        fontSize: 14),
+                  ),
+                  Switch(
+                    value: isSurveyNeeded ?? false,
+                    onChanged: (value) {
+                      setState(() {
+                        isSurveyNeeded = value;
+                      });
+                    },
+                  ),
+                ],
+              ),
+              if (isSurveyNeeded == true)
+                Padding(
+                  padding: const EdgeInsets.only(top: 8.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: const [
+                      Text(
+                        'Contact Admin for Survey:',
+                        style: TextStyle(
+                            color: Colors.black,
+                            fontWeight: FontWeight.w400,
+                            fontSize: 14),
+                      ),
+                      SizedBox(height: 8),
+                      Text(
+                        'Email: admin@faamlink.com',
+                        style: TextStyle(color: Colors.black),
+                      ),
+                      Text(
+                        'WhatsApp: +1234567890',
+                        style: TextStyle(color: Colors.black),
+                      ),
+                    ],
                   ),
                 ),
               const SizedBox(height: 24),
+              // Buttons: Get a Quote or Book a Survey
               Center(
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    fixedSize: const Size(300, 45),
-                    backgroundColor: const Color(0xff1D62F0),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                  ),
-                  onPressed: () {
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => Success()));
-                  },
-                  child: const Center(
-                    child: Text(
-                      'Get a Quote',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 17,
-                        fontWeight: FontWeight.w700,
+                child: Column(
+                  children: [
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        fixedSize: const Size(300, 45),
+                        backgroundColor: const Color(0xff1D62F0),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                      ),
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => Success()),
+                        );
+                      },
+                      child: const Center(
+                        child: Text(
+                          'Get Competitive Quote',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 17,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
                       ),
                     ),
-                  ),
+                    const SizedBox(height: 16),
+                    if (isSurveyNeeded == true)
+                      ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          fixedSize: const Size(300, 45),
+                          backgroundColor: Colors.grey,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                        ),
+                        onPressed: () {
+                          // Add logic for booking a survey
+                        },
+                        child: const Center(
+                          child: Text(
+                            'Book a Survey',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 17,
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
+                        ),
+                      ),
+                  ],
                 ),
               ),
+              const SizedBox(height: 24),
             ],
           ),
         ),

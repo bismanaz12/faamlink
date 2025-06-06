@@ -9,61 +9,24 @@ class FormScreen extends StatefulWidget {
 }
 
 class _FormScreenState extends State<FormScreen> {
-  String? selectedService;
-  String? selectedOption1;
-  String? selectedOption2;
-  DateTime? selectedDate;
-  TimeOfDay? selectedTime;
+  bool? isSurveyNeeded = false;
 
-  // Additional controllers for new fields
-  final TextEditingController emailController = TextEditingController();
-  final TextEditingController whatsappController = TextEditingController();
-  final TextEditingController cargoDeliveryAddressController =
-      TextEditingController();
-  final TextEditingController commodityDescriptionController =
-      TextEditingController();
-  final TextEditingController agentDetailsController = TextEditingController();
-  final TextEditingController loadingDischargeDetailsController =
-      TextEditingController();
-  final TextEditingController packageDimensionsController =
-      TextEditingController();
-  final TextEditingController numberOfPackagesController =
-      TextEditingController();
-  final TextEditingController weightPerPackageController =
-      TextEditingController();
-  final TextEditingController customsPalletsController =
-      TextEditingController();
-  final TextEditingController postalCodeController = TextEditingController();
-  final TextEditingController countryController = TextEditingController();
+  // Controllers for form fields
   final TextEditingController movingFromController = TextEditingController();
   final TextEditingController movingToController = TextEditingController();
-  final TextEditingController mobileNumberController = TextEditingController();
-
-  Future<void> _selectDate(BuildContext context) async {
-    final DateTime? picked = await showDatePicker(
-      context: context,
-      initialDate: DateTime.now(),
-      firstDate: DateTime(2000),
-      lastDate: DateTime(2101),
-    );
-    if (picked != null && picked != selectedDate) {
-      setState(() {
-        selectedDate = picked;
-      });
-    }
-  }
-
-  Future<void> _selectTime(BuildContext context) async {
-    final TimeOfDay? picked = await showTimePicker(
-      context: context,
-      initialTime: TimeOfDay.now(),
-    );
-    if (picked != null && picked != selectedTime) {
-      setState(() {
-        selectedTime = picked;
-      });
-    }
-  }
+  final TextEditingController airportOfLoadingController =
+      TextEditingController();
+  final TextEditingController airportOfDischargeController =
+      TextEditingController();
+  final TextEditingController lengthController = TextEditingController();
+  final TextEditingController widthController = TextEditingController();
+  final TextEditingController heightController = TextEditingController();
+  final TextEditingController weightController = TextEditingController();
+  final TextEditingController cargoDeliveryAddressController =
+      TextEditingController();
+  final TextEditingController postalCodeController = TextEditingController();
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController whatsappController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -107,7 +70,7 @@ class _FormScreenState extends State<FormScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Form',
+                      'Air Freight Form',
                       style: TextStyle(
                         color: Colors.black,
                         fontSize: screenWidth * 0.08,
@@ -115,8 +78,10 @@ class _FormScreenState extends State<FormScreen> {
                       ),
                     ),
                     SizedBox(height: screenHeight * 0.015),
+
+                    // Step 1: Moving From (Country/City to/from UAE)
                     const Text(
-                      'MOVING FROM:',
+                      'MOVING FROM (COUNTRY/CITY TO/FROM UAE):',
                       style: TextStyle(
                         color: Colors.black,
                         fontWeight: FontWeight.w400,
@@ -132,11 +97,14 @@ class _FormScreenState extends State<FormScreen> {
                         ),
                         contentPadding:
                             EdgeInsets.symmetric(horizontal: 10, vertical: 12),
+                        suffixIcon: Icon(Icons.location_on, color: Colors.grey),
                       ),
                     ),
                     SizedBox(height: screenHeight * 0.015),
+
+                    // Step 2: Moving To (Country/City to/from UAE)
                     const Text(
-                      'MOVING TO:',
+                      'MOVING TO (COUNTRY/CITY TO/FROM UAE):',
                       style: TextStyle(
                         color: Colors.black,
                         fontWeight: FontWeight.w400,
@@ -152,9 +120,68 @@ class _FormScreenState extends State<FormScreen> {
                         ),
                         contentPadding:
                             EdgeInsets.symmetric(horizontal: 10, vertical: 12),
+                        suffixIcon: Icon(Icons.location_on, color: Colors.grey),
                       ),
                     ),
                     SizedBox(height: screenHeight * 0.015),
+
+                    // Step 3: Airport of Loading
+                    const Text(
+                      'AIRPORT OF LOADING:',
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontWeight: FontWeight.w400,
+                        fontSize: 14,
+                      ),
+                    ),
+                    const SizedBox(height: 6),
+                    TextFormField(
+                      controller: airportOfLoadingController,
+                      decoration: const InputDecoration(
+                        border: OutlineInputBorder(
+                          borderSide: BorderSide(color: Colors.grey),
+                        ),
+                        contentPadding:
+                            EdgeInsets.symmetric(horizontal: 10, vertical: 12),
+                        suffixIcon:
+                            Icon(Icons.flight_takeoff, color: Colors.grey),
+                      ),
+                    ),
+                    SizedBox(height: screenHeight * 0.015),
+
+                    // Step 4: Airport of Discharge
+                    const Text(
+                      'AIRPORT OF DISCHARGE:',
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontWeight: FontWeight.w400,
+                        fontSize: 14,
+                      ),
+                    ),
+                    const SizedBox(height: 6),
+                    TextFormField(
+                      controller: airportOfDischargeController,
+                      decoration: const InputDecoration(
+                        border: OutlineInputBorder(
+                          borderSide: BorderSide(color: Colors.grey),
+                        ),
+                        contentPadding:
+                            EdgeInsets.symmetric(horizontal: 10, vertical: 12),
+                        suffixIcon: Icon(Icons.flight_land, color: Colors.grey),
+                      ),
+                    ),
+                    SizedBox(height: screenHeight * 0.015),
+
+                    // Step 5: Cargo Details (L x W x H in cm)
+                    const Text(
+                      'CARGO DETAILS (L X W X H IN CM):',
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontWeight: FontWeight.w400,
+                        fontSize: 14,
+                      ),
+                    ),
+                    const SizedBox(height: 6),
                     Row(
                       children: [
                         Expanded(
@@ -162,7 +189,7 @@ class _FormScreenState extends State<FormScreen> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               const Text(
-                                'DATE',
+                                'LENGTH (L):',
                                 style: TextStyle(
                                   color: Colors.black,
                                   fontWeight: FontWeight.w400,
@@ -170,25 +197,16 @@ class _FormScreenState extends State<FormScreen> {
                                 ),
                               ),
                               const SizedBox(height: 6),
-                              Container(
-                                height: 45,
-                                child: OutlinedButton(
-                                  onPressed: () => _selectDate(context),
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Text(
-                                        selectedDate == null
-                                            ? 'Select Date'
-                                            : '${selectedDate!.day}/${selectedDate!.month}/${selectedDate!.year}',
-                                        style: const TextStyle(
-                                            color: Colors.black),
-                                      ),
-                                      const Icon(Icons.calendar_today,
-                                          size: 18),
-                                    ],
+                              TextFormField(
+                                controller: lengthController,
+                                keyboardType: TextInputType.number,
+                                decoration: const InputDecoration(
+                                  border: OutlineInputBorder(
+                                    borderSide: BorderSide(color: Colors.grey),
                                   ),
+                                  contentPadding: EdgeInsets.symmetric(
+                                      horizontal: 10, vertical: 12),
+                                  hintText: 'Length (cm)',
                                 ),
                               ),
                             ],
@@ -200,7 +218,7 @@ class _FormScreenState extends State<FormScreen> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               const Text(
-                                'TIME',
+                                'WIDTH (W):',
                                 style: TextStyle(
                                   color: Colors.black,
                                   fontWeight: FontWeight.w400,
@@ -208,24 +226,45 @@ class _FormScreenState extends State<FormScreen> {
                                 ),
                               ),
                               const SizedBox(height: 6),
-                              Container(
-                                height: 45,
-                                child: OutlinedButton(
-                                  onPressed: () => _selectTime(context),
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Text(
-                                        selectedTime == null
-                                            ? 'Select Time'
-                                            : selectedTime!.format(context),
-                                        style: const TextStyle(
-                                            color: Colors.black),
-                                      ),
-                                      const Icon(Icons.access_time, size: 18),
-                                    ],
+                              TextFormField(
+                                controller: widthController,
+                                keyboardType: TextInputType.number,
+                                decoration: const InputDecoration(
+                                  border: OutlineInputBorder(
+                                    borderSide: BorderSide(color: Colors.grey),
                                   ),
+                                  contentPadding: EdgeInsets.symmetric(
+                                      horizontal: 10, vertical: 12),
+                                  hintText: 'Width (cm)',
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        SizedBox(width: screenWidth * 0.03),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const Text(
+                                'HEIGHT (H):',
+                                style: TextStyle(
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.w400,
+                                  fontSize: 14,
+                                ),
+                              ),
+                              const SizedBox(height: 6),
+                              TextFormField(
+                                controller: heightController,
+                                keyboardType: TextInputType.number,
+                                decoration: const InputDecoration(
+                                  border: OutlineInputBorder(
+                                    borderSide: BorderSide(color: Colors.grey),
+                                  ),
+                                  contentPadding: EdgeInsets.symmetric(
+                                      horizontal: 10, vertical: 12),
+                                  hintText: 'Height (cm)',
                                 ),
                               ),
                             ],
@@ -234,8 +273,10 @@ class _FormScreenState extends State<FormScreen> {
                       ],
                     ),
                     SizedBox(height: screenHeight * 0.015),
+
+                    // Step 6: Weight
                     const Text(
-                      'MOBILE NUMBER',
+                      'WEIGHT OF CARGO:',
                       style: TextStyle(
                         color: Colors.black,
                         fontWeight: FontWeight.w400,
@@ -244,58 +285,22 @@ class _FormScreenState extends State<FormScreen> {
                     ),
                     const SizedBox(height: 6),
                     TextFormField(
-                      controller: mobileNumberController,
+                      controller: weightController,
+                      keyboardType: TextInputType.number,
                       decoration: const InputDecoration(
                         border: OutlineInputBorder(
                           borderSide: BorderSide(color: Colors.grey),
                         ),
                         contentPadding:
                             EdgeInsets.symmetric(horizontal: 10, vertical: 12),
+                        hintText: 'Enter Weight (in kg)',
                       ),
                     ),
                     SizedBox(height: screenHeight * 0.015),
+
+                    // Step 7: Delivery Address
                     const Text(
-                      'EMAIL',
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontWeight: FontWeight.w400,
-                        fontSize: 14,
-                      ),
-                    ),
-                    const SizedBox(height: 6),
-                    TextFormField(
-                      controller: emailController,
-                      decoration: const InputDecoration(
-                        border: OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.grey),
-                        ),
-                        contentPadding:
-                            EdgeInsets.symmetric(horizontal: 10, vertical: 12),
-                      ),
-                    ),
-                    SizedBox(height: screenHeight * 0.015),
-                    const Text(
-                      'WHATSAPP',
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontWeight: FontWeight.w400,
-                        fontSize: 14,
-                      ),
-                    ),
-                    const SizedBox(height: 6),
-                    TextFormField(
-                      controller: whatsappController,
-                      decoration: const InputDecoration(
-                        border: OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.grey),
-                        ),
-                        contentPadding:
-                            EdgeInsets.symmetric(horizontal: 10, vertical: 12),
-                      ),
-                    ),
-                    SizedBox(height: screenHeight * 0.015),
-                    const Text(
-                      'CARGO DELIVERY ADDRESS',
+                      'DELIVERY ADDRESS:',
                       style: TextStyle(
                         color: Colors.black,
                         fontWeight: FontWeight.w400,
@@ -311,151 +316,14 @@ class _FormScreenState extends State<FormScreen> {
                         ),
                         contentPadding:
                             EdgeInsets.symmetric(horizontal: 10, vertical: 12),
+                        suffixIcon: Icon(Icons.location_on, color: Colors.grey),
                       ),
                     ),
                     SizedBox(height: screenHeight * 0.015),
+
+                    // Step 8: Postal Code for Delivery Address
                     const Text(
-                      'COMMODITY DESCRIPTION',
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontWeight: FontWeight.w400,
-                        fontSize: 14,
-                      ),
-                    ),
-                    const SizedBox(height: 6),
-                    TextFormField(
-                      controller: commodityDescriptionController,
-                      decoration: const InputDecoration(
-                        border: OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.grey),
-                        ),
-                        contentPadding:
-                            EdgeInsets.symmetric(horizontal: 10, vertical: 12),
-                      ),
-                    ),
-                    SizedBox(height: screenHeight * 0.015),
-                    const Text(
-                      'AGENT DETAILS',
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontWeight: FontWeight.w400,
-                        fontSize: 14,
-                      ),
-                    ),
-                    const SizedBox(height: 6),
-                    TextFormField(
-                      controller: agentDetailsController,
-                      decoration: const InputDecoration(
-                        border: OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.grey),
-                        ),
-                        contentPadding:
-                            EdgeInsets.symmetric(horizontal: 10, vertical: 12),
-                      ),
-                    ),
-                    SizedBox(height: screenHeight * 0.015),
-                    const Text(
-                      'LOADING/DISCHARGE DETAILS',
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontWeight: FontWeight.w400,
-                        fontSize: 14,
-                      ),
-                    ),
-                    const SizedBox(height: 6),
-                    TextFormField(
-                      controller: loadingDischargeDetailsController,
-                      decoration: const InputDecoration(
-                        border: OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.grey),
-                        ),
-                        contentPadding:
-                            EdgeInsets.symmetric(horizontal: 10, vertical: 12),
-                      ),
-                    ),
-                    SizedBox(height: screenHeight * 0.015),
-                    const Text(
-                      'PACKAGE DIMENSIONS',
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontWeight: FontWeight.w400,
-                        fontSize: 14,
-                      ),
-                    ),
-                    const SizedBox(height: 6),
-                    TextFormField(
-                      controller: packageDimensionsController,
-                      decoration: const InputDecoration(
-                        border: OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.grey),
-                        ),
-                        contentPadding:
-                            EdgeInsets.symmetric(horizontal: 10, vertical: 12),
-                      ),
-                    ),
-                    SizedBox(height: screenHeight * 0.015),
-                    const Text(
-                      'NUMBER OF PACKAGES',
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontWeight: FontWeight.w400,
-                        fontSize: 14,
-                      ),
-                    ),
-                    const SizedBox(height: 6),
-                    TextFormField(
-                      controller: numberOfPackagesController,
-                      decoration: const InputDecoration(
-                        border: OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.grey),
-                        ),
-                        contentPadding:
-                            EdgeInsets.symmetric(horizontal: 10, vertical: 12),
-                      ),
-                    ),
-                    SizedBox(height: screenHeight * 0.015),
-                    const Text(
-                      'WEIGHT PER PACKAGE',
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontWeight: FontWeight.w400,
-                        fontSize: 14,
-                      ),
-                    ),
-                    const SizedBox(height: 6),
-                    TextFormField(
-                      controller: weightPerPackageController,
-                      decoration: const InputDecoration(
-                        border: OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.grey),
-                        ),
-                        contentPadding:
-                            EdgeInsets.symmetric(horizontal: 10, vertical: 12),
-                      ),
-                    ),
-                    SizedBox(height: screenHeight * 0.015),
-                    const Text(
-                      'CUSTOMS/PALLETS',
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontWeight: FontWeight.w400,
-                        fontSize: 14,
-                      ),
-                    ),
-                    const SizedBox(height: 6),
-                    TextFormField(
-                      controller: customsPalletsController,
-                      decoration: const InputDecoration(
-                        border: OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.grey),
-                        ),
-                        contentPadding:
-                            EdgeInsets.symmetric(horizontal: 10, vertical: 12),
-                      ),
-                    ),
-                    SizedBox(height: screenHeight * 0.015),
-                    const Text(
-                      'POSTAL CODE',
+                      'POSTAL CODE:',
                       style: TextStyle(
                         color: Colors.black,
                         fontWeight: FontWeight.w400,
@@ -474,8 +342,10 @@ class _FormScreenState extends State<FormScreen> {
                       ),
                     ),
                     SizedBox(height: screenHeight * 0.015),
+
+                    // Step 9: Contact Details (Email and WhatsApp for Rates)
                     const Text(
-                      'COUNTRY',
+                      'CONTACT DETAILS FOR RATES:',
                       style: TextStyle(
                         color: Colors.black,
                         fontWeight: FontWeight.w400,
@@ -484,41 +354,145 @@ class _FormScreenState extends State<FormScreen> {
                     ),
                     const SizedBox(height: 6),
                     TextFormField(
-                      controller: countryController,
+                      controller: emailController,
                       decoration: const InputDecoration(
                         border: OutlineInputBorder(
                           borderSide: BorderSide(color: Colors.grey),
                         ),
                         contentPadding:
                             EdgeInsets.symmetric(horizontal: 10, vertical: 12),
+                        hintText: 'Enter Email for Rates',
                       ),
                     ),
-                    SizedBox(height: screenHeight * 0.02),
-                    Center(
-                      child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          fixedSize: Size(300, 45),
-                          backgroundColor: Color(0xff1D62F0),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(20),
+                    SizedBox(height: screenHeight * 0.015),
+                    TextFormField(
+                      controller: whatsappController,
+                      keyboardType: TextInputType.phone,
+                      decoration: const InputDecoration(
+                        border: OutlineInputBorder(
+                          borderSide: BorderSide(color: Colors.grey),
+                        ),
+                        contentPadding:
+                            EdgeInsets.symmetric(horizontal: 10, vertical: 12),
+                        hintText: 'Enter WhatsApp (e.g., 058-823-5278)',
+                      ),
+                    ),
+                    SizedBox(height: screenHeight * 0.015),
+
+                    // Step 10: Book a Survey or Get Immediate Quote
+                    const Text(
+                      'CHOOSE AN OPTION:',
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontWeight: FontWeight.w400,
+                        fontSize: 14,
+                      ),
+                    ),
+                    const SizedBox(height: 6),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const Text(
+                          'Not Sure? Book a Survey',
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontWeight: FontWeight.w400,
+                            fontSize: 14,
                           ),
                         ),
-                        onPressed: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => Success()));
-                        },
-                        child: Center(
-                          child: Text(
-                            'Get a Quote',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 17,
-                              fontWeight: FontWeight.w700,
+                        Switch(
+                          value: isSurveyNeeded ?? false,
+                          onChanged: (value) {
+                            setState(() {
+                              isSurveyNeeded = value;
+                            });
+                          },
+                        ),
+                      ],
+                    ),
+                    if (isSurveyNeeded == true)
+                      Padding(
+                        padding: const EdgeInsets.only(top: 8.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: const [
+                            Text(
+                              'Contact Admin for Survey:',
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontWeight: FontWeight.w400,
+                                fontSize: 14,
+                              ),
+                            ),
+                            SizedBox(height: 8),
+                            Text(
+                              'Email: admin@faamlink.com',
+                              style: TextStyle(color: Colors.black),
+                            ),
+                            Text(
+                              'WhatsApp: 058-823-5278',
+                              style: TextStyle(color: Colors.black),
+                            ),
+                          ],
+                        ),
+                      ),
+                    SizedBox(height: screenHeight * 0.015),
+
+                    // Step 11: Buttons (Get a Quote or Book a Survey)
+                    Center(
+                      child: Column(
+                        children: [
+                          ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              fixedSize: const Size(300, 45),
+                              backgroundColor: const Color(0xff1D62F0),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                            ),
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => Success()),
+                              );
+                            },
+                            child: const Center(
+                              child: Text(
+                                'Get Immediate Quote',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 17,
+                                  fontWeight: FontWeight.w700,
+                                ),
+                              ),
                             ),
                           ),
-                        ),
+                          const SizedBox(height: 16),
+                          if (isSurveyNeeded == true)
+                            ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                fixedSize: const Size(300, 45),
+                                backgroundColor: Colors.grey,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(20),
+                                ),
+                              ),
+                              onPressed: () {
+                                // Add logic for booking a survey
+                              },
+                              child: const Center(
+                                child: Text(
+                                  'Book a Survey',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 17,
+                                    fontWeight: FontWeight.w700,
+                                  ),
+                                ),
+                              ),
+                            ),
+                        ],
                       ),
                     ),
                     SizedBox(height: screenHeight * 0.02),

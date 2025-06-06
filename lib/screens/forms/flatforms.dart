@@ -18,6 +18,14 @@ class _FlatFormScreenState extends State<FlatFormScreen> {
   bool isFullHousehold = false;
   bool isItemsDown = false;
 
+  // Variables for items list
+  bool furniture = false;
+  bool sofa = false;
+  bool wallPaintings = false;
+  bool curtains = false;
+  bool cupboards = false;
+  // Add more item variables as needed for the checklist
+
   Future<void> _selectDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
       context: context,
@@ -76,7 +84,7 @@ class _FlatFormScreenState extends State<FlatFormScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const Text(
-                'Form',
+                'Flat Shifting Form',
                 style: TextStyle(
                     color: Colors.black,
                     fontSize: 43,
@@ -143,7 +151,7 @@ class _FlatFormScreenState extends State<FlatFormScreen> {
                 ),
               ),
               const SizedBox(height: 16),
-              // Point 4: Date & Time
+              // Point 4: Moving Date & Time
               Row(
                 children: [
                   Expanded(
@@ -151,7 +159,7 @@ class _FlatFormScreenState extends State<FlatFormScreen> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         const Text(
-                          'DATE:',
+                          'MOVING DATE:',
                           style: TextStyle(
                               color: Colors.black,
                               fontWeight: FontWeight.w400,
@@ -185,7 +193,7 @@ class _FlatFormScreenState extends State<FlatFormScreen> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         const Text(
-                          'TIME:',
+                          'MOVING TIME:',
                           style: TextStyle(
                               color: Colors.black,
                               fontWeight: FontWeight.w400,
@@ -248,9 +256,9 @@ class _FlatFormScreenState extends State<FlatFormScreen> {
                 },
               ),
               const SizedBox(height: 16),
-              // Point 5: Moving with Services
+              // Point 5: Select Services (Full Household or Items Down)
               const Text(
-                'MOVING WITH SERVICES:',
+                'SELECT SERVICES:',
                 style: TextStyle(
                     color: Colors.black,
                     fontWeight: FontWeight.w400,
@@ -261,7 +269,7 @@ class _FlatFormScreenState extends State<FlatFormScreen> {
                 spacing: 8.0,
                 children: [
                   FilterChip(
-                    label: const Text('Full Household'),
+                    label: const Text('Full Household Shifting'),
                     onSelected: (bool value) {
                       setState(() {
                         isFullHousehold = value;
@@ -270,7 +278,7 @@ class _FlatFormScreenState extends State<FlatFormScreen> {
                     selected: isFullHousehold,
                   ),
                   FilterChip(
-                    label: const Text('Items Down'),
+                    label: const Text('Few Items Shifting'),
                     onSelected: (bool value) {
                       setState(() {
                         isItemsDown = value;
@@ -313,9 +321,79 @@ class _FlatFormScreenState extends State<FlatFormScreen> {
                 },
               ),
               const SizedBox(height: 16),
-              // Point 7: List All Items
+              // Point 7: List Down All Items (Checklist for Studio, 1BHK, 2BHK, 3BHK)
               const Text(
-                'LIST ALL ITEMS:',
+                'LIST DOWN ALL ITEMS:',
+                style: TextStyle(
+                    color: Colors.black,
+                    fontWeight: FontWeight.w400,
+                    fontSize: 14),
+              ),
+              const SizedBox(height: 8),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Furniture
+                  CheckboxListTile(
+                    title: const Text(
+                        'Furniture (Fridge, Dishwasher, Microwave, Cooking Range, King/Queen Size Bed, Kids Bed)'),
+                    value: furniture,
+                    onChanged: (bool? value) {
+                      setState(() {
+                        furniture = value ?? false;
+                      });
+                    },
+                  ),
+                  // Sofa, Dining Table, etc.
+                  CheckboxListTile(
+                    title: const Text(
+                        'Sofa, Dining Table, Centre Table, TV Table, Console Table, Arm Chairs'),
+                    value: sofa,
+                    onChanged: (bool? value) {
+                      setState(() {
+                        sofa = value ?? false;
+                      });
+                    },
+                  ),
+                  // Wall Paintings
+                  CheckboxListTile(
+                    title: const Text(
+                        'Wall Paintings, Fragile Items, Decorations, Plants, Table Lamps'),
+                    value: wallPaintings,
+                    onChanged: (bool? value) {
+                      setState(() {
+                        wallPaintings = value ?? false;
+                      });
+                    },
+                  ),
+                  // Curtains
+                  CheckboxListTile(
+                    title: const Text(
+                        'Curtains, Kitchen Items, Utensils, Dinner Sets, Crockery & Other Kitchen Appliances'),
+                    value: curtains,
+                    onChanged: (bool? value) {
+                      setState(() {
+                        curtains = value ?? false;
+                      });
+                    },
+                  ),
+                  // Cupboards
+                  CheckboxListTile(
+                    title: const Text(
+                        'Cupboards, Wardrobes, Kids Wardrobes, Study Table, Dresser'),
+                    value: cupboards,
+                    onChanged: (bool? value) {
+                      setState(() {
+                        cupboards = value ?? false;
+                      });
+                    },
+                  ),
+                ],
+              ),
+              const SizedBox(height: 16),
+              // Additional Items (Text Field for Custom Input)
+              const Text(
+                'ADDITIONAL ITEMS (IF ANY):',
                 style: TextStyle(
                     color: Colors.black,
                     fontWeight: FontWeight.w400,
@@ -333,7 +411,15 @@ class _FlatFormScreenState extends State<FlatFormScreen> {
                 ),
               ),
               const SizedBox(height: 16),
-              // Book a Survey Option
+              // Book a Survey or Get Immediate Quote
+              const Text(
+                'CHOOSE AN OPTION:',
+                style: TextStyle(
+                    color: Colors.black,
+                    fontWeight: FontWeight.w400,
+                    fontSize: 14),
+              ),
+              const SizedBox(height: 8),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -380,32 +466,63 @@ class _FlatFormScreenState extends State<FlatFormScreen> {
                   ),
                 ),
               const SizedBox(height: 24),
-              // Get a Quote Button
+              // Buttons: Get a Quote or Book a Survey
               Center(
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    fixedSize: const Size(300, 45),
-                    backgroundColor: const Color(0xff1D62F0),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                  ),
-                  onPressed: () {
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => Success()));
-                  },
-                  child: const Center(
-                    child: Text(
-                      'Get a Quote',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 17,
-                        fontWeight: FontWeight.w700,
+                child: Column(
+                  children: [
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        fixedSize: const Size(300, 45),
+                        backgroundColor: const Color(0xff1D62F0),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                      ),
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => Success()),
+                        );
+                      },
+                      child: const Center(
+                        child: Text(
+                          'Get Immediate Quote',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 17,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
                       ),
                     ),
-                  ),
+                    const SizedBox(height: 16),
+                    if (isSurveyNeeded == true)
+                      ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          fixedSize: const Size(300, 45),
+                          backgroundColor: Colors.grey,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                        ),
+                        onPressed: () {
+                          // Add logic for booking a survey
+                        },
+                        child: const Center(
+                          child: Text(
+                            'Book a Survey',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 17,
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
+                        ),
+                      ),
+                  ],
                 ),
               ),
+              const SizedBox(height: 24),
             ],
           ),
         ),

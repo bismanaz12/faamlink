@@ -9,13 +9,14 @@ class VillaFormScreen extends StatefulWidget {
 }
 
 class _VillaFormScreenState extends State<VillaFormScreen> {
+  String? selectedVillaType;
+  String? selectedFragileItems;
   String? selectedFloors;
-  String? selectedLift;
   DateTime? selectedDate;
   TimeOfDay? selectedTime;
   bool? isSurveyNeeded = false;
 
-  // State for checkboxes
+  // State for checkboxes (for listing items, including fragile ones)
   bool lamps = false;
   bool microwaveOven = false;
   bool bowls = false;
@@ -95,13 +96,14 @@ class _VillaFormScreenState extends State<VillaFormScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const Text(
-                'Form',
+                'Villa Shifting Form',
                 style: TextStyle(
                     color: Colors.black,
                     fontSize: 43,
                     fontWeight: FontWeight.w700),
               ),
               const SizedBox(height: 16),
+              // Point 1: Moving From (City + Area)
               const Text(
                 'MOVING FROM (CITY & AREA):',
                 style: TextStyle(
@@ -121,6 +123,7 @@ class _VillaFormScreenState extends State<VillaFormScreen> {
                 ),
               ),
               const SizedBox(height: 16),
+              // Point 2: Moving To (City + Area)
               const Text(
                 'MOVING TO (CITY & AREA):',
                 style: TextStyle(
@@ -140,6 +143,27 @@ class _VillaFormScreenState extends State<VillaFormScreen> {
                 ),
               ),
               const SizedBox(height: 16),
+              // Point 3: Mobile Number
+              const Text(
+                'MOBILE NUMBER:',
+                style: TextStyle(
+                    color: Colors.black,
+                    fontWeight: FontWeight.w400,
+                    fontSize: 14),
+              ),
+              const SizedBox(height: 8),
+              TextFormField(
+                keyboardType: TextInputType.phone,
+                decoration: const InputDecoration(
+                  border: OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.grey),
+                  ),
+                  contentPadding:
+                      EdgeInsets.symmetric(horizontal: 10, vertical: 15),
+                ),
+              ),
+              const SizedBox(height: 16),
+              // Point 4: Moving Time & Date
               Row(
                 children: [
                   Expanded(
@@ -147,7 +171,7 @@ class _VillaFormScreenState extends State<VillaFormScreen> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         const Text(
-                          'DATE',
+                          'MOVING DATE:',
                           style: TextStyle(
                               color: Colors.black,
                               fontWeight: FontWeight.w400,
@@ -181,7 +205,7 @@ class _VillaFormScreenState extends State<VillaFormScreen> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         const Text(
-                          'TIME',
+                          'MOVING TIME:',
                           style: TextStyle(
                               color: Colors.black,
                               fontWeight: FontWeight.w400,
@@ -212,27 +236,9 @@ class _VillaFormScreenState extends State<VillaFormScreen> {
                 ],
               ),
               const SizedBox(height: 16),
+              // Select Villa Type (3BHK + 1-unit Villa, 4BHK + 1-unit Villa, 5BHK + 1-unit Villa, 6BHK+ Villa)
               const Text(
-                'MOBILE NUMBER',
-                style: TextStyle(
-                    color: Colors.black,
-                    fontWeight: FontWeight.w400,
-                    fontSize: 14),
-              ),
-              const SizedBox(height: 8),
-              TextFormField(
-                keyboardType: TextInputType.phone,
-                decoration: const InputDecoration(
-                  border: OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.grey),
-                  ),
-                  contentPadding:
-                      EdgeInsets.symmetric(horizontal: 10, vertical: 15),
-                ),
-              ),
-              const SizedBox(height: 16),
-              const Text(
-                'NUMBER OF FLOORS:',
+                'SELECT VILLA TYPE:',
                 style: TextStyle(
                     color: Colors.black,
                     fontWeight: FontWeight.w400,
@@ -247,9 +253,14 @@ class _VillaFormScreenState extends State<VillaFormScreen> {
                   contentPadding:
                       EdgeInsets.symmetric(horizontal: 10, vertical: 15),
                 ),
-                value: selectedFloors,
-                hint: const Text('Select Floors'),
-                items: ['Ground +1', 'Ground +2']
+                value: selectedVillaType,
+                hint: const Text('Select Villa Type'),
+                items: [
+                  '3BHK + 1-unit Villa',
+                  '4BHK + 1-unit Villa',
+                  '5BHK + 1-unit Villa',
+                  '6BHK+ Villa'
+                ]
                     .map((String value) => DropdownMenuItem<String>(
                           value: value,
                           child: Text(value),
@@ -257,44 +268,14 @@ class _VillaFormScreenState extends State<VillaFormScreen> {
                     .toList(),
                 onChanged: (newValue) {
                   setState(() {
-                    selectedFloors = newValue;
+                    selectedVillaType = newValue;
                   });
                 },
               ),
               const SizedBox(height: 16),
+              // Point 5: List Down All Items (Using the existing checkbox list)
               const Text(
-                'LIFT AVAILABILITY:',
-                style: TextStyle(
-                    color: Colors.black,
-                    fontWeight: FontWeight.w400,
-                    fontSize: 14),
-              ),
-              const SizedBox(height: 8),
-              DropdownButtonFormField<String>(
-                decoration: const InputDecoration(
-                  border: OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.grey),
-                  ),
-                  contentPadding:
-                      EdgeInsets.symmetric(horizontal: 10, vertical: 15),
-                ),
-                value: selectedLift,
-                hint: const Text('Select Lift Availability'),
-                items: ['Yes', 'No']
-                    .map((String value) => DropdownMenuItem<String>(
-                          value: value,
-                          child: Text(value),
-                        ))
-                    .toList(),
-                onChanged: (newValue) {
-                  setState(() {
-                    selectedLift = newValue;
-                  });
-                },
-              ),
-              const SizedBox(height: 16),
-              const Text(
-                'LIST ALL ITEMS (INCLUDING FRAGILE):',
+                'LIST DOWN ALL ITEMS:',
                 style: TextStyle(
                     color: Colors.black,
                     fontWeight: FontWeight.w400,
@@ -419,6 +400,118 @@ class _VillaFormScreenState extends State<VillaFormScreen> {
                   ),
                 ),
               const SizedBox(height: 16),
+              // Point 6: List Down Fragile Items
+              const Text(
+                'LIST DOWN FRAGILE ITEMS:',
+                style: TextStyle(
+                    color: Colors.black,
+                    fontWeight: FontWeight.w400,
+                    fontSize: 14),
+              ),
+              const SizedBox(height: 8),
+              DropdownButtonFormField<String>(
+                decoration: const InputDecoration(
+                  border: OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.grey),
+                  ),
+                  contentPadding:
+                      EdgeInsets.symmetric(horizontal: 10, vertical: 15),
+                ),
+                value: selectedFragileItems,
+                hint: const Text('Select Fragile Items'),
+                items: ['Yes', 'No']
+                    .map((String value) => DropdownMenuItem<String>(
+                          value: value,
+                          child: Text(value),
+                        ))
+                    .toList(),
+                onChanged: (newValue) {
+                  setState(() {
+                    selectedFragileItems = newValue;
+                  });
+                },
+              ),
+              const SizedBox(height: 16),
+              // Point 7: How Many Floors (With or Without Lift)
+              const Text(
+                'HOW MANY FLOORS (WITH OR WITHOUT LIFT):',
+                style: TextStyle(
+                    color: Colors.black,
+                    fontWeight: FontWeight.w400,
+                    fontSize: 14),
+              ),
+              const SizedBox(height: 8),
+              DropdownButtonFormField<String>(
+                decoration: const InputDecoration(
+                  border: OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.grey),
+                  ),
+                  contentPadding:
+                      EdgeInsets.symmetric(horizontal: 10, vertical: 15),
+                ),
+                value: selectedFloors,
+                hint: const Text('Select Floors & Lift Availability'),
+                items: [
+                  'Ground + 1 (With Lift)',
+                  'Ground + 1 (Without Lift)',
+                  'Ground + 2 (With Lift)',
+                  'Ground + 2 (Without Lift)',
+                  'More Floors (With Lift)',
+                  'More Floors (Without Lift)'
+                ]
+                    .map((String value) => DropdownMenuItem<String>(
+                          value: value,
+                          child: Text(value),
+                        ))
+                    .toList(),
+                onChanged: (newValue) {
+                  setState(() {
+                    selectedFloors = newValue;
+                  });
+                },
+              ),
+              const SizedBox(height: 16),
+              // Point 8: Handyman & Unpacking Required
+              const Text(
+                'HANDYMAN & UNPACKING REQUIRED:',
+                style: TextStyle(
+                    color: Colors.black,
+                    fontWeight: FontWeight.w400,
+                    fontSize: 14),
+              ),
+              const SizedBox(height: 8),
+              DropdownButtonFormField<String>(
+                decoration: const InputDecoration(
+                  border: OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.grey),
+                  ),
+                  contentPadding:
+                      EdgeInsets.symmetric(horizontal: 10, vertical: 15),
+                ),
+                value: selectedFragileItems,
+                hint: const Text('Select Option'),
+                items: ['Yes', 'No']
+                    .map((String value) => DropdownMenuItem<String>(
+                          value: value,
+                          child: Text(value),
+                        ))
+                    .toList(),
+                onChanged: (newValue) {
+                  setState(() {
+                    selectedFragileItems = newValue;
+                  });
+                },
+              ),
+              const SizedBox(height: 16),
+              // Book a Survey or Get Immediate Quote
+              const Text(
+                'CHOOSE AN OPTION:',
+                style: TextStyle(
+                    color: Colors.black,
+                    fontWeight: FontWeight.w400,
+                    fontSize: 14),
+              ),
+              const SizedBox(height: 8),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -465,31 +558,63 @@ class _VillaFormScreenState extends State<VillaFormScreen> {
                   ),
                 ),
               const SizedBox(height: 24),
+              // Buttons: Get a Quote or Book a Survey
               Center(
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    fixedSize: const Size(300, 45),
-                    backgroundColor: const Color(0xff1D62F0),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                  ),
-                  onPressed: () {
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => Success()));
-                  },
-                  child: const Center(
-                    child: Text(
-                      'Get a Quote',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 17,
-                        fontWeight: FontWeight.w700,
+                child: Column(
+                  children: [
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        fixedSize: const Size(300, 45),
+                        backgroundColor: const Color(0xff1D62F0),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                      ),
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => Success()),
+                        );
+                      },
+                      child: const Center(
+                        child: Text(
+                          'Get Immediate Quote',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 17,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
                       ),
                     ),
-                  ),
+                    const SizedBox(height: 16),
+                    if (isSurveyNeeded == true)
+                      ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          fixedSize: const Size(300, 45),
+                          backgroundColor: Colors.grey,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                        ),
+                        onPressed: () {
+                          // Add logic for booking a survey
+                        },
+                        child: const Center(
+                          child: Text(
+                            'Book a Survey',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 17,
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
+                        ),
+                      ),
+                  ],
                 ),
               ),
+              const SizedBox(height: 24),
             ],
           ),
         ),

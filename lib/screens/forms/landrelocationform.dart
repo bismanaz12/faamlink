@@ -11,11 +11,15 @@ class Landrelocationform extends StatefulWidget {
 class _LandrelocationformState extends State<Landrelocationform> {
   String? selectedService;
   String? selectedContainerSize;
-  String? selectedOption2;
+  String? selectedLoadingType; // Added for Loading Type
   DateTime? selectedDate;
   TimeOfDay? selectedTime;
+  bool? isSurveyNeeded = false; // Added for survey toggle
 
   // Controllers for form fields
+  final TextEditingController movingFromController = TextEditingController();
+  final TextEditingController movingToController = TextEditingController();
+  final TextEditingController mobileNumberController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController whatsappController = TextEditingController();
   final TextEditingController contactPersonController = TextEditingController();
@@ -23,13 +27,12 @@ class _LandrelocationformState extends State<Landrelocationform> {
   final TextEditingController commodityController = TextEditingController();
   final TextEditingController deliveryAddressController =
       TextEditingController();
+  final TextEditingController postalCodeController = TextEditingController();
   final TextEditingController loadingDetailsController =
       TextEditingController();
   final TextEditingController totalWeightController = TextEditingController();
-  final TextEditingController areaCityCountryController =
-      TextEditingController();
-  final TextEditingController movingFromController = TextEditingController();
-  final TextEditingController movingToController = TextEditingController();
+  final TextEditingController loadingContactPersonController =
+      TextEditingController(); // Added
 
   Future<void> _selectDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
@@ -99,7 +102,7 @@ class _LandrelocationformState extends State<Landrelocationform> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Form',
+                      'Land Freight Form',
                       style: TextStyle(
                         color: Colors.black,
                         fontSize: screenWidth * 0.08,
@@ -107,8 +110,10 @@ class _LandrelocationformState extends State<Landrelocationform> {
                       ),
                     ),
                     SizedBox(height: screenHeight * 0.015),
+
+                    // Step 1: Moving From (Within/To Country)
                     const Text(
-                      'MOVING FROM:',
+                      'MOVING FROM (WITHIN/TO COUNTRY):',
                       style: TextStyle(
                         color: Colors.black,
                         fontWeight: FontWeight.w400,
@@ -124,11 +129,15 @@ class _LandrelocationformState extends State<Landrelocationform> {
                         ),
                         contentPadding:
                             EdgeInsets.symmetric(horizontal: 10, vertical: 12),
+                        suffixIcon: Icon(Icons.location_on, color: Colors.grey),
+                        hintText: 'Enter Address or Location',
                       ),
                     ),
                     SizedBox(height: screenHeight * 0.015),
+
+                    // Step 2: Moving To (Within/To Country)
                     const Text(
-                      'MOVING TO:',
+                      'MOVING TO (WITHIN/TO COUNTRY):',
                       style: TextStyle(
                         color: Colors.black,
                         fontWeight: FontWeight.w400,
@@ -144,9 +153,67 @@ class _LandrelocationformState extends State<Landrelocationform> {
                         ),
                         contentPadding:
                             EdgeInsets.symmetric(horizontal: 10, vertical: 12),
+                        suffixIcon: Icon(Icons.location_on, color: Colors.grey),
+                        hintText: 'Enter Address or Location',
                       ),
                     ),
                     SizedBox(height: screenHeight * 0.015),
+
+                    // Step 3: Delivery Address
+                    const Text(
+                      'DELIVERY ADDRESS:',
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontWeight: FontWeight.w400,
+                        fontSize: 14,
+                      ),
+                    ),
+                    const SizedBox(height: 6),
+                    TextFormField(
+                      controller: deliveryAddressController,
+                      decoration: const InputDecoration(
+                        border: OutlineInputBorder(
+                          borderSide: BorderSide(color: Colors.grey),
+                        ),
+                        contentPadding:
+                            EdgeInsets.symmetric(horizontal: 10, vertical: 12),
+                        suffixIcon: Icon(Icons.location_on, color: Colors.grey),
+                      ),
+                    ),
+                    SizedBox(height: screenHeight * 0.015),
+
+                    // Step 4: Postal Code for Delivery Address
+                    const Text(
+                      'POSTAL CODE:',
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontWeight: FontWeight.w400,
+                        fontSize: 14,
+                      ),
+                    ),
+                    const SizedBox(height: 6),
+                    TextFormField(
+                      controller: postalCodeController,
+                      decoration: const InputDecoration(
+                        border: OutlineInputBorder(
+                          borderSide: BorderSide(color: Colors.grey),
+                        ),
+                        contentPadding:
+                            EdgeInsets.symmetric(horizontal: 10, vertical: 12),
+                      ),
+                    ),
+                    SizedBox(height: screenHeight * 0.015),
+
+                    // Step 5: Moving Date & Time
+                    const Text(
+                      'MOVING DATE & TIME:',
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontWeight: FontWeight.w400,
+                        fontSize: 14,
+                      ),
+                    ),
+                    const SizedBox(height: 6),
                     Row(
                       children: [
                         Expanded(
@@ -154,7 +221,7 @@ class _LandrelocationformState extends State<Landrelocationform> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               const Text(
-                                'DATE',
+                                'DATE:',
                                 style: TextStyle(
                                   color: Colors.black,
                                   fontWeight: FontWeight.w400,
@@ -192,7 +259,7 @@ class _LandrelocationformState extends State<Landrelocationform> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               const Text(
-                                'TIME',
+                                'TIME:',
                                 style: TextStyle(
                                   color: Colors.black,
                                   fontWeight: FontWeight.w400,
@@ -226,48 +293,10 @@ class _LandrelocationformState extends State<Landrelocationform> {
                       ],
                     ),
                     SizedBox(height: screenHeight * 0.015),
+
+                    // Step 6: Contact Person
                     const Text(
-                      'EMAIL',
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontWeight: FontWeight.w400,
-                        fontSize: 14,
-                      ),
-                    ),
-                    const SizedBox(height: 6),
-                    TextFormField(
-                      controller: emailController,
-                      decoration: const InputDecoration(
-                        border: OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.grey),
-                        ),
-                        contentPadding:
-                            EdgeInsets.symmetric(horizontal: 10, vertical: 12),
-                      ),
-                    ),
-                    SizedBox(height: screenHeight * 0.015),
-                    const Text(
-                      'WHATSAPP',
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontWeight: FontWeight.w400,
-                        fontSize: 14,
-                      ),
-                    ),
-                    const SizedBox(height: 6),
-                    TextFormField(
-                      controller: whatsappController,
-                      decoration: const InputDecoration(
-                        border: OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.grey),
-                        ),
-                        contentPadding:
-                            EdgeInsets.symmetric(horizontal: 10, vertical: 12),
-                      ),
-                    ),
-                    SizedBox(height: screenHeight * 0.015),
-                    const Text(
-                      'CONTACT PERSON',
+                      'CONTACT PERSON:',
                       style: TextStyle(
                         color: Colors.black,
                         fontWeight: FontWeight.w400,
@@ -283,11 +312,14 @@ class _LandrelocationformState extends State<Landrelocationform> {
                         ),
                         contentPadding:
                             EdgeInsets.symmetric(horizontal: 10, vertical: 12),
+                        suffixIcon: Icon(Icons.person, color: Colors.grey),
                       ),
                     ),
                     SizedBox(height: screenHeight * 0.015),
+
+                    // Step 7: Mobile Number
                     const Text(
-                      'CARGO PACKAGES',
+                      'MOBILE NUMBER:',
                       style: TextStyle(
                         color: Colors.black,
                         fontWeight: FontWeight.w400,
@@ -296,18 +328,22 @@ class _LandrelocationformState extends State<Landrelocationform> {
                     ),
                     const SizedBox(height: 6),
                     TextFormField(
-                      controller: cargoPackagesController,
+                      controller: mobileNumberController,
+                      keyboardType: TextInputType.phone,
                       decoration: const InputDecoration(
                         border: OutlineInputBorder(
                           borderSide: BorderSide(color: Colors.grey),
                         ),
                         contentPadding:
                             EdgeInsets.symmetric(horizontal: 10, vertical: 12),
+                        suffixIcon: Icon(Icons.phone, color: Colors.grey),
                       ),
                     ),
                     SizedBox(height: screenHeight * 0.015),
+
+                    // Step 8: Commodity Description
                     const Text(
-                      'COMMODITY DESCRIPTION',
+                      'COMMODITY DESCRIPTION:',
                       style: TextStyle(
                         color: Colors.black,
                         fontWeight: FontWeight.w400,
@@ -326,8 +362,10 @@ class _LandrelocationformState extends State<Landrelocationform> {
                       ),
                     ),
                     SizedBox(height: screenHeight * 0.015),
+
+                    // Step 9: Number of Cargo Packages
                     const Text(
-                      'DELIVERY ADDRESS',
+                      'NUMBER OF CARGO PACKAGES:',
                       style: TextStyle(
                         color: Colors.black,
                         fontWeight: FontWeight.w400,
@@ -336,7 +374,8 @@ class _LandrelocationformState extends State<Landrelocationform> {
                     ),
                     const SizedBox(height: 6),
                     TextFormField(
-                      controller: deliveryAddressController,
+                      controller: cargoPackagesController,
+                      keyboardType: TextInputType.number,
                       decoration: const InputDecoration(
                         border: OutlineInputBorder(
                           borderSide: BorderSide(color: Colors.grey),
@@ -346,28 +385,10 @@ class _LandrelocationformState extends State<Landrelocationform> {
                       ),
                     ),
                     SizedBox(height: screenHeight * 0.015),
+
+                    // Step 10: Total Weight
                     const Text(
-                      'LOADING DETAILS',
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontWeight: FontWeight.w400,
-                        fontSize: 14,
-                      ),
-                    ),
-                    const SizedBox(height: 6),
-                    TextFormField(
-                      controller: loadingDetailsController,
-                      decoration: const InputDecoration(
-                        border: OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.grey),
-                        ),
-                        contentPadding:
-                            EdgeInsets.symmetric(horizontal: 10, vertical: 12),
-                      ),
-                    ),
-                    SizedBox(height: screenHeight * 0.015),
-                    const Text(
-                      'TOTAL WEIGHT',
+                      'TOTAL WEIGHT (KG):',
                       style: TextStyle(
                         color: Colors.black,
                         fontWeight: FontWeight.w400,
@@ -377,6 +398,7 @@ class _LandrelocationformState extends State<Landrelocationform> {
                     const SizedBox(height: 6),
                     TextFormField(
                       controller: totalWeightController,
+                      keyboardType: TextInputType.number,
                       decoration: const InputDecoration(
                         border: OutlineInputBorder(
                           borderSide: BorderSide(color: Colors.grey),
@@ -386,8 +408,10 @@ class _LandrelocationformState extends State<Landrelocationform> {
                       ),
                     ),
                     SizedBox(height: screenHeight * 0.015),
+
+                    // Step 11: Loading Details
                     const Text(
-                      'AREA/CITY/COUNTRY',
+                      'LOADING DETAILS:',
                       style: TextStyle(
                         color: Colors.black,
                         fontWeight: FontWeight.w400,
@@ -395,17 +419,67 @@ class _LandrelocationformState extends State<Landrelocationform> {
                       ),
                     ),
                     const SizedBox(height: 6),
-                    TextFormField(
-                      controller: areaCityCountryController,
-                      decoration: const InputDecoration(
-                        border: OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.grey),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          'LOADING TYPE:',
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontWeight: FontWeight.w400,
+                            fontSize: 14,
+                          ),
                         ),
-                        contentPadding:
-                            EdgeInsets.symmetric(horizontal: 10, vertical: 12),
-                      ),
+                        const SizedBox(height: 6),
+                        DropdownButtonFormField<String>(
+                          decoration: const InputDecoration(
+                            border: OutlineInputBorder(
+                              borderSide: BorderSide(color: Colors.grey),
+                            ),
+                            contentPadding: EdgeInsets.symmetric(
+                                horizontal: 10, vertical: 12),
+                          ),
+                          value: selectedLoadingType,
+                          hint: const Text('Select Loading Type'),
+                          isExpanded: true,
+                          items: ['Manual', 'Forklift']
+                              .map((String value) => DropdownMenuItem<String>(
+                                    value: value,
+                                    child: Text(value),
+                                  ))
+                              .toList(),
+                          onChanged: (newValue) {
+                            setState(() {
+                              selectedLoadingType = newValue;
+                            });
+                          },
+                        ),
+                        SizedBox(height: screenHeight * 0.015),
+                        const Text(
+                          'LOADING CONTACT PERSON:',
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontWeight: FontWeight.w400,
+                            fontSize: 14,
+                          ),
+                        ),
+                        const SizedBox(height: 6),
+                        TextFormField(
+                          controller: loadingContactPersonController,
+                          decoration: const InputDecoration(
+                            border: OutlineInputBorder(
+                              borderSide: BorderSide(color: Colors.grey),
+                            ),
+                            contentPadding: EdgeInsets.symmetric(
+                                horizontal: 10, vertical: 12),
+                            suffixIcon: Icon(Icons.person, color: Colors.grey),
+                          ),
+                        ),
+                      ],
                     ),
                     SizedBox(height: screenHeight * 0.015),
+
+                    // Step 12: Select Container Size
                     const Text(
                       'SELECT CONTAINER SIZE:',
                       style: TextStyle(
@@ -442,32 +516,158 @@ class _LandrelocationformState extends State<Landrelocationform> {
                         },
                       ),
                     ),
-                    SizedBox(height: screenHeight * 0.02),
-                    Center(
-                      child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          fixedSize: Size(300, 45),
-                          backgroundColor: Color(0xff1D62F0),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(20),
+                    SizedBox(height: screenHeight * 0.015),
+
+                    // Step 13: Contact Details for Rates
+                    const Text(
+                      'CONTACT DETAILS FOR RATES:',
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontWeight: FontWeight.w400,
+                        fontSize: 14,
+                      ),
+                    ),
+                    const SizedBox(height: 6),
+                    TextFormField(
+                      controller: emailController,
+                      decoration: const InputDecoration(
+                        border: OutlineInputBorder(
+                          borderSide: BorderSide(color: Colors.grey),
+                        ),
+                        contentPadding:
+                            EdgeInsets.symmetric(horizontal: 10, vertical: 12),
+                        hintText: 'Enter Email for Rates',
+                      ),
+                    ),
+                    SizedBox(height: screenHeight * 0.015),
+                    TextFormField(
+                      controller: whatsappController,
+                      keyboardType: TextInputType.phone,
+                      decoration: const InputDecoration(
+                        border: OutlineInputBorder(
+                          borderSide: BorderSide(color: Colors.grey),
+                        ),
+                        contentPadding:
+                            EdgeInsets.symmetric(horizontal: 10, vertical: 12),
+                        hintText: 'Enter WhatsApp (e.g., 058-823-5278)',
+                      ),
+                    ),
+                    SizedBox(height: screenHeight * 0.015),
+
+                    // Step 14: Book a Survey or Get Immediate Quote
+                    const Text(
+                      'CHOOSE AN OPTION:',
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontWeight: FontWeight.w400,
+                        fontSize: 14,
+                      ),
+                    ),
+                    const SizedBox(height: 6),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const Text(
+                          'Not Sure? Book a Survey',
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontWeight: FontWeight.w400,
+                            fontSize: 14,
                           ),
                         ),
-                        onPressed: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => Success()));
-                        },
-                        child: Center(
-                          child: Text(
-                            'Get a Quote',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 17,
-                              fontWeight: FontWeight.w700,
+                        Switch(
+                          value: isSurveyNeeded ?? false,
+                          onChanged: (value) {
+                            setState(() {
+                              isSurveyNeeded = value;
+                            });
+                          },
+                        ),
+                      ],
+                    ),
+                    if (isSurveyNeeded == true)
+                      Padding(
+                        padding: const EdgeInsets.only(top: 8.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: const [
+                            Text(
+                              'Contact Admin for Survey:',
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontWeight: FontWeight.w400,
+                                fontSize: 14,
+                              ),
+                            ),
+                            SizedBox(height: 8),
+                            Text(
+                              'Email: admin@faamlink.com',
+                              style: TextStyle(color: Colors.black),
+                            ),
+                            Text(
+                              'WhatsApp: 058-823-5278',
+                              style: TextStyle(color: Colors.black),
+                            ),
+                          ],
+                        ),
+                      ),
+                    SizedBox(height: screenHeight * 0.015),
+
+                    // Step 15: Buttons (Get a Quote or Book a Survey)
+                    Center(
+                      child: Column(
+                        children: [
+                          ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              fixedSize: const Size(300, 45),
+                              backgroundColor: const Color(0xff1D62F0),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                            ),
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => Success()),
+                              );
+                            },
+                            child: const Center(
+                              child: Text(
+                                'Get Immediate Quote',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 17,
+                                  fontWeight: FontWeight.w700,
+                                ),
+                              ),
                             ),
                           ),
-                        ),
+                          const SizedBox(height: 16),
+                          if (isSurveyNeeded == true)
+                            ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                fixedSize: const Size(300, 45),
+                                backgroundColor: Colors.grey,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(20),
+                                ),
+                              ),
+                              onPressed: () {
+                                // Add logic for booking a survey
+                              },
+                              child: const Center(
+                                child: Text(
+                                  'Book a Survey',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 17,
+                                    fontWeight: FontWeight.w700,
+                                  ),
+                                ),
+                              ),
+                            ),
+                        ],
                       ),
                     ),
                     SizedBox(height: screenHeight * 0.02),
