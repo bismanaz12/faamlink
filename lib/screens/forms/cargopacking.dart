@@ -212,6 +212,28 @@ class _CargoPackagingFormState extends State<CargoPackagingForm> {
                     ),
                   ),
                   SizedBox(height: screenHeight * 0.015),
+                   const Text(
+                    'Packing address or location:',
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontWeight: FontWeight.w400,
+                      fontSize: 14,
+                    ),
+                  ),
+                  const SizedBox(height: 6),
+                  TextFormField(
+                    controller: weightController,
+                    keyboardType: TextInputType.number,
+                    decoration: const InputDecoration(
+                      border: OutlineInputBorder(
+                        borderSide: BorderSide(color: Colors.grey),
+                      ),
+                      contentPadding:
+                          EdgeInsets.symmetric(horizontal: 10, vertical: 12),
+                      hintText: 'Packing address or location',
+                    ),
+                  ),
+                    const SizedBox(height: 10),
 
                   // Step 4: Cargo Details (L x W x H in cm)
                   const Text(

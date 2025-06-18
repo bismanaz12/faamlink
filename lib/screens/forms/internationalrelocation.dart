@@ -13,6 +13,7 @@ class _InternationalRelocationScreenState
     extends State<InternationalRelocationScreen> {
   String? selectedRelocationType;
   String? selectedFragileItems;
+  String? selectedTransportMethod; // Added for transport method selection
   DateTime? selectedDate;
   TimeOfDay? selectedTime;
   bool? isSurveyNeeded = false;
@@ -144,7 +145,68 @@ class _InternationalRelocationScreenState
                 ),
               ),
               const SizedBox(height: 16),
-              // Step 3: Mobile Number + Email Address
+              // Step 3: Transport Method Selection
+              const Text(
+                'TRANSPORT METHOD:',
+                style: TextStyle(
+                    color: Colors.black,
+                    fontWeight: FontWeight.w400,
+                    fontSize: 14),
+              ),
+              const SizedBox(height: 8),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                decoration: BoxDecoration(
+                  border: Border.all(color: Colors.grey),
+                  borderRadius: BorderRadius.circular(4),
+                ),
+                child: DropdownButtonHideUnderline(
+                  child: DropdownButton<String>(
+                    value: selectedTransportMethod,
+                    hint: const Text('Select Transport Method'),
+                    isExpanded: true,
+                    items: const [
+                      DropdownMenuItem(
+                        value: 'Air',
+                        child: Row(
+                          children: [
+                            Icon(Icons.flight, color: Colors.blue),
+                            SizedBox(width: 8),
+                            Text('Move by Air'),
+                          ],
+                        ),
+                      ),
+                      DropdownMenuItem(
+                        value: 'Land',
+                        child: Row(
+                          children: [
+                            Icon(Icons.local_shipping, color: Colors.green),
+                            SizedBox(width: 8),
+                            Text('Move by Land'),
+                          ],
+                        ),
+                      ),
+                      DropdownMenuItem(
+                        value: 'Sea',
+                        child: Row(
+                          children: [
+                            Icon(Icons.directions_boat, color: Colors.teal),
+                            SizedBox(width: 8),
+                            Text('Move by Sea'),
+                          ],
+                        ),
+                      ),
+                    ],
+                    onChanged: (String? newValue) {
+                      setState(() {
+                        selectedTransportMethod = newValue;
+                      });
+                    },
+                  ),
+                ),
+              ),
+              const SizedBox(height: 16),
+              // Step 4: Mobile Number + Email Address
               const Text(
                 'MOBILE NUMBER:',
                 style: TextStyle(
@@ -185,7 +247,7 @@ class _InternationalRelocationScreenState
                 ),
               ),
               const SizedBox(height: 16),
-              // Step 4: Moving Date with Time
+              // Step 5: Moving Date with Time
               Row(
                 children: [
                   Expanded(
@@ -258,7 +320,7 @@ class _InternationalRelocationScreenState
                 ],
               ),
               const SizedBox(height: 16),
-              // Step 5: List Down All Items (Cases)
+              // Step 6: List Down All Items (Cases)
               const Text(
                 'LIST DOWN ALL ITEMS (CASES):',
                 style: TextStyle(
@@ -343,7 +405,7 @@ class _InternationalRelocationScreenState
                   ),
                 ),
               const SizedBox(height: 16),
-              // Step 5 (cont.): List Down Fragile, Glass, or Any Unstackable Item
+              // Step 7: List Down Fragile, Glass, or Any Unstackable Item
               const Text(
                 'LIST DOWN FRAGILE, GLASS, OR ANY UNSTACKABLE ITEM:',
                 style: TextStyle(
@@ -364,7 +426,7 @@ class _InternationalRelocationScreenState
                 ),
               ),
               const SizedBox(height: 16),
-              // Step 7: Provide Cargo Pictures or Short Video (If Possible)
+              // Step 8: Provide Cargo Pictures or Short Video (If Possible)
               const Text(
                 'PROVIDE CARGO PICTURES OR SHORT VIDEO (IF POSSIBLE):',
                 style: TextStyle(
@@ -385,7 +447,7 @@ class _InternationalRelocationScreenState
                 ),
               ),
               const SizedBox(height: 16),
-              // Step 8: Book a Survey or Get Competitive Quote
+              // Step 9: Book a Survey or Get Competitive Quote
               const Text(
                 'CHOOSE AN OPTION:',
                 style: TextStyle(
@@ -397,12 +459,14 @@ class _InternationalRelocationScreenState
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const Text(
-                    'Not Sure? Book a Survey for Accurate & Competitive Quote',
-                    style: TextStyle(
-                        color: Colors.black,
-                        fontWeight: FontWeight.w400,
-                        fontSize: 14),
+                  const Expanded(
+                    child: Text(
+                      'Not Sure? Book a Survey for Accurate & Competitive Quote',
+                      style: TextStyle(
+                          color: Colors.black,
+                          fontWeight: FontWeight.w400,
+                          fontSize: 14),
+                    ),
                   ),
                   Switch(
                     value: isSurveyNeeded ?? false,
@@ -531,7 +595,7 @@ class _InternationalRelocationScreenState
           ),
         ),
         const SizedBox(width: 8),
-        Text(label),
+        Flexible(child: Text(label)),
       ],
     );
   }

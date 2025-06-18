@@ -14,17 +14,29 @@ class _FormScreenState extends State<FormScreen> {
   // Controllers for form fields
   final TextEditingController movingFromController = TextEditingController();
   final TextEditingController movingToController = TextEditingController();
-  final TextEditingController airportOfLoadingController =
-      TextEditingController();
-  final TextEditingController airportOfDischargeController =
-      TextEditingController();
+  final TextEditingController airportOfLoadingController = TextEditingController();
+  final TextEditingController airportOfDischargeController = TextEditingController();
+  
+  // Collection address controllers
+  final TextEditingController collectionAddressController = TextEditingController();
+  final TextEditingController collectionPostalCodeController = TextEditingController();
+  
+  // Commodity controllers
+  final TextEditingController commodityController = TextEditingController();
+  final TextEditingController hsCodeController = TextEditingController();
+  
+  // Cargo details controllers
+  final TextEditingController numberOfPackagesController = TextEditingController();
   final TextEditingController lengthController = TextEditingController();
   final TextEditingController widthController = TextEditingController();
   final TextEditingController heightController = TextEditingController();
-  final TextEditingController weightController = TextEditingController();
-  final TextEditingController cargoDeliveryAddressController =
-      TextEditingController();
-  final TextEditingController postalCodeController = TextEditingController();
+  final TextEditingController grossWeightController = TextEditingController();
+  
+  // Delivery address controllers
+  final TextEditingController cargoDeliveryAddressController = TextEditingController();
+  final TextEditingController deliveryPostalCodeController = TextEditingController();
+  
+  // Contact controllers
   final TextEditingController emailController = TextEditingController();
   final TextEditingController whatsappController = TextEditingController();
 
@@ -172,9 +184,138 @@ class _FormScreenState extends State<FormScreen> {
                     ),
                     SizedBox(height: screenHeight * 0.015),
 
-                    // Step 5: Cargo Details (L x W x H in cm)
+                    // Step 5: Collection Address with Postal Code
                     const Text(
-                      'CARGO DETAILS (L X W X H IN CM):',
+                      'COLLECTION ADDRESS:',
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontWeight: FontWeight.w400,
+                        fontSize: 14,
+                      ),
+                    ),
+                    const SizedBox(height: 6),
+                    TextFormField(
+                      controller: collectionAddressController,
+                      decoration: const InputDecoration(
+                        border: OutlineInputBorder(
+                          borderSide: BorderSide(color: Colors.grey),
+                        ),
+                        contentPadding:
+                            EdgeInsets.symmetric(horizontal: 10, vertical: 12),
+                        suffixIcon: Icon(Icons.location_on, color: Colors.grey),
+                        hintText: 'Enter collection address',
+                      ),
+                    ),
+                    SizedBox(height: screenHeight * 0.015),
+
+                    // Collection Postal Code
+                    const Text(
+                      'COLLECTION POSTAL CODE:',
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontWeight: FontWeight.w400,
+                        fontSize: 14,
+                      ),
+                    ),
+                    const SizedBox(height: 6),
+                    TextFormField(
+                      controller: collectionPostalCodeController,
+                      decoration: const InputDecoration(
+                        border: OutlineInputBorder(
+                          borderSide: BorderSide(color: Colors.grey),
+                        ),
+                        contentPadding:
+                            EdgeInsets.symmetric(horizontal: 10, vertical: 12),
+                        hintText: 'Enter postal code',
+                      ),
+                    ),
+                    SizedBox(height: screenHeight * 0.015),
+
+                    // Step 6: Commodity with H.S Code
+                    const Text(
+                      'COMMODITY:',
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontWeight: FontWeight.w400,
+                        fontSize: 14,
+                      ),
+                    ),
+                    const SizedBox(height: 6),
+                    TextFormField(
+                      controller: commodityController,
+                      decoration: const InputDecoration(
+                        border: OutlineInputBorder(
+                          borderSide: BorderSide(color: Colors.grey),
+                        ),
+                        contentPadding:
+                            EdgeInsets.symmetric(horizontal: 10, vertical: 12),
+                        hintText: 'Enter commodity description',
+                      ),
+                    ),
+                    SizedBox(height: screenHeight * 0.015),
+
+                    // H.S Code
+                    const Text(
+                      'H.S CODE:',
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontWeight: FontWeight.w400,
+                        fontSize: 14,
+                      ),
+                    ),
+                    const SizedBox(height: 6),
+                    TextFormField(
+                      controller: hsCodeController,
+                      decoration: const InputDecoration(
+                        border: OutlineInputBorder(
+                          borderSide: BorderSide(color: Colors.grey),
+                        ),
+                        contentPadding:
+                            EdgeInsets.symmetric(horizontal: 10, vertical: 12),
+                        hintText: 'Enter H.S Code',
+                      ),
+                    ),
+                    SizedBox(height: screenHeight * 0.015),
+
+                    // Step 7: Cargo Details
+                     Text(
+                      'CARGO DETAILS:',
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontWeight: FontWeight.w400,
+                        fontSize: 16,
+                        // fon: FontWeight.w600,
+                      ),
+                    ),
+                    SizedBox(height: screenHeight * 0.01),
+
+                    // Number of Packages/Cartons/Pallets
+                    const Text(
+                      'NUMBER OF PACKAGES/CARTONS/PALLETS:',
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontWeight: FontWeight.w400,
+                        fontSize: 14,
+                      ),
+                    ),
+                    const SizedBox(height: 6),
+                    TextFormField(
+                      controller: numberOfPackagesController,
+                      keyboardType: TextInputType.number,
+                      decoration: const InputDecoration(
+                        border: OutlineInputBorder(
+                          borderSide: BorderSide(color: Colors.grey),
+                        ),
+                        contentPadding:
+                            EdgeInsets.symmetric(horizontal: 10, vertical: 12),
+                        hintText: 'Enter number of packages',
+                      ),
+                    ),
+                    SizedBox(height: screenHeight * 0.015),
+
+                    // Dimensions of each package/carton/pallet
+                    const Text(
+                      'DIMENSIONS OF EACH PACKAGE/CARTON/PALLET (L X W X H IN CM):',
                       style: TextStyle(
                         color: Colors.black,
                         fontWeight: FontWeight.w400,
@@ -193,10 +334,10 @@ class _FormScreenState extends State<FormScreen> {
                                 style: TextStyle(
                                   color: Colors.black,
                                   fontWeight: FontWeight.w400,
-                                  fontSize: 14,
+                                  fontSize: 12,
                                 ),
                               ),
-                              const SizedBox(height: 6),
+                              const SizedBox(height: 4),
                               TextFormField(
                                 controller: lengthController,
                                 keyboardType: TextInputType.number,
@@ -205,14 +346,14 @@ class _FormScreenState extends State<FormScreen> {
                                     borderSide: BorderSide(color: Colors.grey),
                                   ),
                                   contentPadding: EdgeInsets.symmetric(
-                                      horizontal: 10, vertical: 12),
-                                  hintText: 'Length (cm)',
+                                      horizontal: 8, vertical: 10),
+                                  hintText: 'Length',
                                 ),
                               ),
                             ],
                           ),
                         ),
-                        SizedBox(width: screenWidth * 0.03),
+                        SizedBox(width: screenWidth * 0.02),
                         Expanded(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -222,10 +363,10 @@ class _FormScreenState extends State<FormScreen> {
                                 style: TextStyle(
                                   color: Colors.black,
                                   fontWeight: FontWeight.w400,
-                                  fontSize: 14,
+                                  fontSize: 12,
                                 ),
                               ),
-                              const SizedBox(height: 6),
+                              const SizedBox(height: 4),
                               TextFormField(
                                 controller: widthController,
                                 keyboardType: TextInputType.number,
@@ -234,14 +375,14 @@ class _FormScreenState extends State<FormScreen> {
                                     borderSide: BorderSide(color: Colors.grey),
                                   ),
                                   contentPadding: EdgeInsets.symmetric(
-                                      horizontal: 10, vertical: 12),
-                                  hintText: 'Width (cm)',
+                                      horizontal: 8, vertical: 10),
+                                  hintText: 'Width',
                                 ),
                               ),
                             ],
                           ),
                         ),
-                        SizedBox(width: screenWidth * 0.03),
+                        SizedBox(width: screenWidth * 0.02),
                         Expanded(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -251,10 +392,10 @@ class _FormScreenState extends State<FormScreen> {
                                 style: TextStyle(
                                   color: Colors.black,
                                   fontWeight: FontWeight.w400,
-                                  fontSize: 14,
+                                  fontSize: 12,
                                 ),
                               ),
-                              const SizedBox(height: 6),
+                              const SizedBox(height: 4),
                               TextFormField(
                                 controller: heightController,
                                 keyboardType: TextInputType.number,
@@ -263,8 +404,8 @@ class _FormScreenState extends State<FormScreen> {
                                     borderSide: BorderSide(color: Colors.grey),
                                   ),
                                   contentPadding: EdgeInsets.symmetric(
-                                      horizontal: 10, vertical: 12),
-                                  hintText: 'Height (cm)',
+                                      horizontal: 8, vertical: 10),
+                                  hintText: 'Height',
                                 ),
                               ),
                             ],
@@ -274,9 +415,9 @@ class _FormScreenState extends State<FormScreen> {
                     ),
                     SizedBox(height: screenHeight * 0.015),
 
-                    // Step 6: Weight
+                    // Gross Weight of each package/carton/pallet
                     const Text(
-                      'WEIGHT OF CARGO:',
+                      'GROSS WEIGHT OF EACH PACKAGE/CARTON/PALLET (KG):',
                       style: TextStyle(
                         color: Colors.black,
                         fontWeight: FontWeight.w400,
@@ -285,7 +426,7 @@ class _FormScreenState extends State<FormScreen> {
                     ),
                     const SizedBox(height: 6),
                     TextFormField(
-                      controller: weightController,
+                      controller: grossWeightController,
                       keyboardType: TextInputType.number,
                       decoration: const InputDecoration(
                         border: OutlineInputBorder(
@@ -293,12 +434,12 @@ class _FormScreenState extends State<FormScreen> {
                         ),
                         contentPadding:
                             EdgeInsets.symmetric(horizontal: 10, vertical: 12),
-                        hintText: 'Enter Weight (in kg)',
+                        hintText: 'Enter gross weight (in kg)',
                       ),
                     ),
                     SizedBox(height: screenHeight * 0.015),
 
-                    // Step 7: Delivery Address
+                    // Step 8: Delivery Address with Postal Code
                     const Text(
                       'DELIVERY ADDRESS:',
                       style: TextStyle(
@@ -317,13 +458,14 @@ class _FormScreenState extends State<FormScreen> {
                         contentPadding:
                             EdgeInsets.symmetric(horizontal: 10, vertical: 12),
                         suffixIcon: Icon(Icons.location_on, color: Colors.grey),
+                        hintText: 'Enter delivery address',
                       ),
                     ),
                     SizedBox(height: screenHeight * 0.015),
 
-                    // Step 8: Postal Code for Delivery Address
+                    // Delivery Postal Code
                     const Text(
-                      'POSTAL CODE:',
+                      'DELIVERY POSTAL CODE:',
                       style: TextStyle(
                         color: Colors.black,
                         fontWeight: FontWeight.w400,
@@ -332,13 +474,14 @@ class _FormScreenState extends State<FormScreen> {
                     ),
                     const SizedBox(height: 6),
                     TextFormField(
-                      controller: postalCodeController,
+                      controller: deliveryPostalCodeController,
                       decoration: const InputDecoration(
                         border: OutlineInputBorder(
                           borderSide: BorderSide(color: Colors.grey),
                         ),
                         contentPadding:
                             EdgeInsets.symmetric(horizontal: 10, vertical: 12),
+                        hintText: 'Enter delivery postal code',
                       ),
                     ),
                     SizedBox(height: screenHeight * 0.015),
@@ -362,6 +505,7 @@ class _FormScreenState extends State<FormScreen> {
                         contentPadding:
                             EdgeInsets.symmetric(horizontal: 10, vertical: 12),
                         hintText: 'Enter Email for Rates',
+                        suffixIcon: Icon(Icons.email, color: Colors.grey),
                       ),
                     ),
                     SizedBox(height: screenHeight * 0.015),
@@ -375,6 +519,7 @@ class _FormScreenState extends State<FormScreen> {
                         contentPadding:
                             EdgeInsets.symmetric(horizontal: 10, vertical: 12),
                         hintText: 'Enter WhatsApp (e.g., 058-823-5278)',
+                        suffixIcon: Icon(Icons.phone, color: Colors.grey),
                       ),
                     ),
                     SizedBox(height: screenHeight * 0.015),

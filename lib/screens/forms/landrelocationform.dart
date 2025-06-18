@@ -10,6 +10,8 @@ class Landrelocationform extends StatefulWidget {
 
 class _LandrelocationformState extends State<Landrelocationform> {
   String? selectedService;
+  String? selectedTransportType; // New: Local UAE or GCC
+  String? selectedVehicleService; // New: Vehicle/Service selection based on transport type
   String? selectedContainerSize;
   String? selectedLoadingType; // Added for Loading Type
   DateTime? selectedDate;
@@ -33,6 +35,8 @@ class _LandrelocationformState extends State<Landrelocationform> {
   final TextEditingController totalWeightController = TextEditingController();
   final TextEditingController loadingContactPersonController =
       TextEditingController(); // Added
+  final TextEditingController deliveryContactPersonController =
+      TextEditingController(); // Added for delivery contact
 
   Future<void> _selectDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
@@ -58,6 +62,16 @@ class _LandrelocationformState extends State<Landrelocationform> {
         selectedTime = picked;
       });
     }
+  }
+
+  // Get vehicle/service options based on transport type
+  List<String> getVehicleServiceOptions() {
+    if (selectedTransportType == 'Local within UAE') {
+      return ['1 Ton', '3 Ton', '7 Ton', '10 Ton', '12 meter trailer'];
+    } else if (selectedTransportType == 'GCC') {
+      return ['3 ton','7 ton', '10 ton', '12 meter trailer' ];
+    }
+    return [];
   }
 
   @override
@@ -110,6 +124,105 @@ class _LandrelocationformState extends State<Landrelocationform> {
                       ),
                     ),
                     SizedBox(height: screenHeight * 0.015),
+
+                    // NEW: Vehicle/Service Selection (appears after transport type is selected)
+                   
+                    SizedBox(height: screenHeight * 0.015),
+
+                    // NEW: Transport Type Selection (Local UAE or GCC)
+                    const Text(
+                      'TRANSPORT TYPE:',
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontWeight: FontWeight.w400,
+                        fontSize: 14,
+                      ),
+                    ),
+                    const SizedBox(height: 6),
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                      decoration: BoxDecoration(
+                        border: Border.all(color: Colors.grey),
+                        borderRadius: BorderRadius.circular(4),
+                      ),
+                      child: DropdownButtonHideUnderline(
+                        child: DropdownButton<String>(
+                          value: selectedTransportType,
+                          hint: const Text('Select Transport Type'),
+                          isExpanded: true,
+                          items: const [
+                            DropdownMenuItem(
+                              value: 'Local within UAE',
+                              child: Row(
+                                children: [
+                                  Icon(Icons.local_shipping, color: Colors.blue),
+                                  SizedBox(width: 8),
+                                  Text('Local within UAE'),
+                                ],
+                              ),
+                            ),
+                            DropdownMenuItem(
+                              value: 'GCC',
+                              child: Row(
+                                children: [
+                                  Icon(Icons.public, color: Colors.green),
+                                  SizedBox(width: 8),
+                                  Text('GCC Countries'),
+                                ],
+                              ),
+                            ),
+                          ],
+                          onChanged: (String? newValue) {
+                            setState(() {
+                              selectedTransportType = newValue;
+                              selectedVehicleService = null; // Reset vehicle/service selection
+                              selectedContainerSize = null; // Reset container selection
+                            });
+                          },
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: screenHeight * 0.015),
+                     if (selectedTransportType != null) ...[
+                      Text(
+                        selectedTransportType == 'Local within UAE' 
+                            ? 'SELECT VEHICLE/SERVICE TYPE:' 
+                            : 'SELECT CONTAINER/VEHICLE TYPE:',
+                        style: const TextStyle(
+                          color: Colors.black,
+                          fontWeight: FontWeight.w400,
+                          fontSize: 14,
+                        ),
+                      ),
+                    
+                      const SizedBox(height: 6),
+                      DropdownButtonFormField<String>(
+                        decoration: const InputDecoration(
+                          border: OutlineInputBorder(
+                            borderSide: BorderSide(color: Colors.grey),
+                          ),
+                          contentPadding: EdgeInsets.symmetric(
+                              horizontal: 10, vertical: 12),
+                        ),
+                        value: selectedVehicleService,
+                        hint: Text(selectedTransportType == 'Local within UAE' 
+                            ? 'Select Vehicle/Service Type' 
+                            : 'Select Container/Vehicle Type'),
+                        isExpanded: true,
+                        items: getVehicleServiceOptions()
+                            .map((String value) => DropdownMenuItem<String>(
+                                  value: value,
+                                  child: Text(value),
+                                ))
+                            .toList(),
+                        onChanged: (newValue) {
+                          setState(() {
+                            selectedVehicleService = newValue;
+                          });
+                        },
+                      ),
+                      SizedBox(height: screenHeight * 0.015),
+                    ],
 
                     // Step 1: Moving From (Within/To Country)
                     const Text(
@@ -456,7 +569,7 @@ class _LandrelocationformState extends State<Landrelocationform> {
                         ),
                         SizedBox(height: screenHeight * 0.015),
                         const Text(
-                          'LOADING CONTACT PERSON:',
+                          'CONTACT PERSON NUMBER FOR LOADING:',
                           style: TextStyle(
                             color: Colors.black,
                             fontWeight: FontWeight.w400,
@@ -466,57 +579,83 @@ class _LandrelocationformState extends State<Landrelocationform> {
                         const SizedBox(height: 6),
                         TextFormField(
                           controller: loadingContactPersonController,
+                          keyboardType: TextInputType.phone,
                           decoration: const InputDecoration(
                             border: OutlineInputBorder(
                               borderSide: BorderSide(color: Colors.grey),
                             ),
                             contentPadding: EdgeInsets.symmetric(
                                 horizontal: 10, vertical: 12),
-                            suffixIcon: Icon(Icons.person, color: Colors.grey),
+                            suffixIcon: Icon(Icons.phone, color: Colors.grey),
+                          ),
+                        ),
+                        SizedBox(height: screenHeight * 0.015),
+                        const Text(
+                          'CONTACT PERSON NUMBER FOR DELIVERY:',
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontWeight: FontWeight.w400,
+                            fontSize: 14,
+                          ),
+                        ),
+                        const SizedBox(height: 6),
+                        TextFormField(
+                          controller: deliveryContactPersonController,
+                          keyboardType: TextInputType.phone,
+                          decoration: const InputDecoration(
+                            border: OutlineInputBorder(
+                              borderSide: BorderSide(color: Colors.grey),
+                            ),
+                            contentPadding: EdgeInsets.symmetric(
+                                horizontal: 10, vertical: 12),
+                            suffixIcon: Icon(Icons.phone, color: Colors.grey),
                           ),
                         ),
                       ],
                     ),
                     SizedBox(height: screenHeight * 0.015),
 
-                    // Step 12: Select Container Size
-                    const Text(
-                      'SELECT CONTAINER SIZE:',
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontWeight: FontWeight.w400,
-                        fontSize: 14,
-                      ),
-                    ),
-                    const SizedBox(height: 6),
-                    Container(
-                      constraints:
-                          BoxConstraints(maxHeight: screenHeight * 0.25),
-                      child: DropdownButtonFormField<String>(
-                        decoration: const InputDecoration(
-                          border: OutlineInputBorder(
-                            borderSide: BorderSide(color: Colors.grey),
-                          ),
-                          contentPadding: EdgeInsets.symmetric(
-                              horizontal: 10, vertical: 12),
+                    // Step 12: Dynamic Container Size Selection (only for containers)
+                    if (selectedVehicleService != null && 
+                        (selectedVehicleService!.contains('Container') || selectedVehicleService == 'GCC Truck')) ...[
+                      const Text(
+                        'SELECT CONTAINER SIZE:',
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontWeight: FontWeight.w400,
+                          fontSize: 14,
                         ),
-                        value: selectedContainerSize,
-                        hint: const Text('Select Container Size'),
-                        isExpanded: true,
-                        items: ['20ft', '40ft', 'GCC']
-                            .map((String value) => DropdownMenuItem<String>(
-                                  value: value,
-                                  child: Text(value),
-                                ))
-                            .toList(),
-                        onChanged: (newValue) {
-                          setState(() {
-                            selectedContainerSize = newValue;
-                          });
-                        },
                       ),
-                    ),
-                    SizedBox(height: screenHeight * 0.015),
+                      const SizedBox(height: 6),
+                      Container(
+                        constraints:
+                            BoxConstraints(maxHeight: screenHeight * 0.25),
+                        child: DropdownButtonFormField<String>(
+                          decoration: const InputDecoration(
+                            border: OutlineInputBorder(
+                              borderSide: BorderSide(color: Colors.grey),
+                            ),
+                            contentPadding: EdgeInsets.symmetric(
+                                horizontal: 10, vertical: 12),
+                          ),
+                          value: selectedContainerSize,
+                          hint: const Text('Select Container Size'),
+                          isExpanded: true,
+                          items: ['20ft', '40ft']
+                              .map((String value) => DropdownMenuItem<String>(
+                                    value: value,
+                                    child: Text(value),
+                                  ))
+                              .toList(),
+                          onChanged: (newValue) {
+                            setState(() {
+                              selectedContainerSize = newValue;
+                            });
+                          },
+                        ),
+                      ),
+                      SizedBox(height: screenHeight * 0.015),
+                    ],
 
                     // Step 13: Contact Details for Rates
                     const Text(
@@ -567,12 +706,14 @@ class _LandrelocationformState extends State<Landrelocationform> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        const Text(
-                          'Not Sure? Book a Survey',
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontWeight: FontWeight.w400,
-                            fontSize: 14,
+                        const Expanded(
+                          child: Text(
+                            'Not Sure? Book a Survey for Accurate Quote',
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontWeight: FontWeight.w400,
+                              fontSize: 14,
+                            ),
                           ),
                         ),
                         Switch(
