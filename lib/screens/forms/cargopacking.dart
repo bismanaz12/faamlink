@@ -212,7 +212,7 @@ class _CargoPackagingFormState extends State<CargoPackagingForm> {
                     ),
                   ),
                   SizedBox(height: screenHeight * 0.015),
-                   const Text(
+                  const Text(
                     'Packing address or location:',
                     style: TextStyle(
                       color: Colors.black,
@@ -233,7 +233,7 @@ class _CargoPackagingFormState extends State<CargoPackagingForm> {
                       hintText: 'Packing address or location',
                     ),
                   ),
-                    const SizedBox(height: 10),
+                  const SizedBox(height: 10),
 
                   // Step 4: Cargo Details (L x W x H in cm)
                   const Text(
@@ -359,42 +359,9 @@ class _CargoPackagingFormState extends State<CargoPackagingForm> {
                       hintText: 'Enter Weight (in kg)',
                     ),
                   ),
-                  SizedBox(height: screenHeight * 0.015),
 
                   // Step 6: Contact Details (Email and WhatsApp for Rates)
-                  const Text(
-                    'CONTACT DETAILS FOR RATES:',
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontWeight: FontWeight.w400,
-                      fontSize: 14,
-                    ),
-                  ),
-                  const SizedBox(height: 6),
-                  TextFormField(
-                    controller: emailController,
-                    decoration: const InputDecoration(
-                      border: OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.grey),
-                      ),
-                      contentPadding:
-                          EdgeInsets.symmetric(horizontal: 10, vertical: 12),
-                      hintText: 'Enter Email for Rates',
-                    ),
-                  ),
-                  SizedBox(height: screenHeight * 0.015),
-                  TextFormField(
-                    controller: whatsappController,
-                    keyboardType: TextInputType.phone,
-                    decoration: const InputDecoration(
-                      border: OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.grey),
-                      ),
-                      contentPadding:
-                          EdgeInsets.symmetric(horizontal: 10, vertical: 12),
-                      hintText: 'Enter WhatsApp (e.g., 058-823-5278)',
-                    ),
-                  ),
+
                   SizedBox(height: screenHeight * 0.015),
 
                   // Step 7: Book a Survey or Get Immediate Quote

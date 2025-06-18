@@ -9,11 +9,10 @@ class Landrelocationform extends StatefulWidget {
 }
 
 class _LandrelocationformState extends State<Landrelocationform> {
-  String? selectedService;
-  String? selectedTransportType; // New: Local UAE or GCC
-  String? selectedVehicleService; // New: Vehicle/Service selection based on transport type
-  String? selectedContainerSize;
-  String? selectedLoadingType; // Added for Loading Type
+  String?
+      selectedTransportType; // Correctly declared as a nullable instance variable
+  String?
+      selectedVehicleService; // Vehicle/Service selection based on transport type
   DateTime? selectedDate;
   TimeOfDay? selectedTime;
   bool? isSurveyNeeded = false; // Added for survey toggle
@@ -21,22 +20,19 @@ class _LandrelocationformState extends State<Landrelocationform> {
   // Controllers for form fields
   final TextEditingController movingFromController = TextEditingController();
   final TextEditingController movingToController = TextEditingController();
-  final TextEditingController mobileNumberController = TextEditingController();
-  final TextEditingController emailController = TextEditingController();
-  final TextEditingController whatsappController = TextEditingController();
-  final TextEditingController contactPersonController = TextEditingController();
-  final TextEditingController cargoPackagesController = TextEditingController();
+  final TextEditingController contactPersonLoadingController =
+      TextEditingController();
+  final TextEditingController contactPersonDeliveryController =
+      TextEditingController();
   final TextEditingController commodityController = TextEditingController();
-  final TextEditingController deliveryAddressController =
+  final TextEditingController cargoWeightController = TextEditingController();
+  final TextEditingController totalPackagesController = TextEditingController();
+  final TextEditingController loadingTimeDateController =
       TextEditingController();
-  final TextEditingController postalCodeController = TextEditingController();
-  final TextEditingController loadingDetailsController =
+  final TextEditingController cargoCommercialRateController =
       TextEditingController();
-  final TextEditingController totalWeightController = TextEditingController();
-  final TextEditingController loadingContactPersonController =
-      TextEditingController(); // Added
-  final TextEditingController deliveryContactPersonController =
-      TextEditingController(); // Added for delivery contact
+  final TextEditingController cargoInsuranceController =
+      TextEditingController();
 
   Future<void> _selectDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
@@ -48,6 +44,8 @@ class _LandrelocationformState extends State<Landrelocationform> {
     if (picked != null && picked != selectedDate) {
       setState(() {
         selectedDate = picked;
+        loadingTimeDateController.text =
+            '${picked.day}/${picked.month}/${picked.year}';
       });
     }
   }
@@ -60,6 +58,7 @@ class _LandrelocationformState extends State<Landrelocationform> {
     if (picked != null && picked != selectedTime) {
       setState(() {
         selectedTime = picked;
+        loadingTimeDateController.text += ' ${picked.format(context)}';
       });
     }
   }
@@ -69,9 +68,16 @@ class _LandrelocationformState extends State<Landrelocationform> {
     if (selectedTransportType == 'Local within UAE') {
       return ['1 Ton', '3 Ton', '7 Ton', '10 Ton', '12 meter trailer'];
     } else if (selectedTransportType == 'GCC') {
-      return ['3 ton','7 ton', '10 ton', '12 meter trailer' ];
+      return ['3 Ton', '7 Ton', '10 Ton', '12 meter trailer'];
     }
     return [];
+  }
+
+  // Helper method to get the appropriate hint text based on transport type
+  String getLocationHintText() {
+    return selectedTransportType == 'GCC'
+        ? 'Enter Area, City, and Country'
+        : 'Enter Area and City';
   }
 
   @override
@@ -125,13 +131,9 @@ class _LandrelocationformState extends State<Landrelocationform> {
                     ),
                     SizedBox(height: screenHeight * 0.015),
 
-                    // NEW: Vehicle/Service Selection (appears after transport type is selected)
-                   
-                    SizedBox(height: screenHeight * 0.015),
-
-                    // NEW: Transport Type Selection (Local UAE or GCC)
+                    // Step 1: Method of Land Freight
                     const Text(
-                      'TRANSPORT TYPE:',
+                      'METHOD OF LAND FREIGHT:',
                       style: TextStyle(
                         color: Colors.black,
                         fontWeight: FontWeight.w400,
@@ -140,7 +142,8 @@ class _LandrelocationformState extends State<Landrelocationform> {
                     ),
                     const SizedBox(height: 6),
                     Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 12, vertical: 4),
                       decoration: BoxDecoration(
                         border: Border.all(color: Colors.grey),
                         borderRadius: BorderRadius.circular(4),
@@ -155,7 +158,8 @@ class _LandrelocationformState extends State<Landrelocationform> {
                               value: 'Local within UAE',
                               child: Row(
                                 children: [
-                                  Icon(Icons.local_shipping, color: Colors.blue),
+                                  Icon(Icons.local_shipping,
+                                      color: Colors.blue),
                                   SizedBox(width: 8),
                                   Text('Local within UAE'),
                                 ],
@@ -175,26 +179,22 @@ class _LandrelocationformState extends State<Landrelocationform> {
                           onChanged: (String? newValue) {
                             setState(() {
                               selectedTransportType = newValue;
-                              selectedVehicleService = null; // Reset vehicle/service selection
-                              selectedContainerSize = null; // Reset container selection
+                              selectedVehicleService = null;
                             });
                           },
                         ),
                       ),
                     ),
                     SizedBox(height: screenHeight * 0.015),
-                     if (selectedTransportType != null) ...[
-                      Text(
-                        selectedTransportType == 'Local within UAE' 
-                            ? 'SELECT VEHICLE/SERVICE TYPE:' 
-                            : 'SELECT CONTAINER/VEHICLE TYPE:',
-                        style: const TextStyle(
+                    if (selectedTransportType != null) ...[
+                      const Text(
+                        'TRUCK TYPE:',
+                        style: TextStyle(
                           color: Colors.black,
                           fontWeight: FontWeight.w400,
                           fontSize: 14,
                         ),
                       ),
-                    
                       const SizedBox(height: 6),
                       DropdownButtonFormField<String>(
                         decoration: const InputDecoration(
@@ -205,9 +205,7 @@ class _LandrelocationformState extends State<Landrelocationform> {
                               horizontal: 10, vertical: 12),
                         ),
                         value: selectedVehicleService,
-                        hint: Text(selectedTransportType == 'Local within UAE' 
-                            ? 'Select Vehicle/Service Type' 
-                            : 'Select Container/Vehicle Type'),
+                        hint: const Text('Select Truck Type'),
                         isExpanded: true,
                         items: getVehicleServiceOptions()
                             .map((String value) => DropdownMenuItem<String>(
@@ -224,9 +222,9 @@ class _LandrelocationformState extends State<Landrelocationform> {
                       SizedBox(height: screenHeight * 0.015),
                     ],
 
-                    // Step 1: Moving From (Within/To Country)
+                    // Step 2: Loading From
                     const Text(
-                      'MOVING FROM (WITHIN/TO COUNTRY):',
+                      'LOADING FROM:',
                       style: TextStyle(
                         color: Colors.black,
                         fontWeight: FontWeight.w400,
@@ -236,21 +234,22 @@ class _LandrelocationformState extends State<Landrelocationform> {
                     const SizedBox(height: 6),
                     TextFormField(
                       controller: movingFromController,
-                      decoration: const InputDecoration(
-                        border: OutlineInputBorder(
+                      decoration: InputDecoration(
+                        border: const OutlineInputBorder(
                           borderSide: BorderSide(color: Colors.grey),
                         ),
-                        contentPadding:
-                            EdgeInsets.symmetric(horizontal: 10, vertical: 12),
-                        suffixIcon: Icon(Icons.location_on, color: Colors.grey),
-                        hintText: 'Enter Address or Location',
+                        contentPadding: const EdgeInsets.symmetric(
+                            horizontal: 10, vertical: 12),
+                        suffixIcon:
+                            const Icon(Icons.location_on, color: Colors.grey),
+                        hintText: getLocationHintText(),
                       ),
                     ),
                     SizedBox(height: screenHeight * 0.015),
 
-                    // Step 2: Moving To (Within/To Country)
+                    // Step 3: Delivery To
                     const Text(
-                      'MOVING TO (WITHIN/TO COUNTRY):',
+                      'DELIVERY TO:',
                       style: TextStyle(
                         color: Colors.black,
                         fontWeight: FontWeight.w400,
@@ -260,203 +259,22 @@ class _LandrelocationformState extends State<Landrelocationform> {
                     const SizedBox(height: 6),
                     TextFormField(
                       controller: movingToController,
-                      decoration: const InputDecoration(
-                        border: OutlineInputBorder(
+                      decoration: InputDecoration(
+                        border: const OutlineInputBorder(
                           borderSide: BorderSide(color: Colors.grey),
                         ),
-                        contentPadding:
-                            EdgeInsets.symmetric(horizontal: 10, vertical: 12),
-                        suffixIcon: Icon(Icons.location_on, color: Colors.grey),
-                        hintText: 'Enter Address or Location',
+                        contentPadding: const EdgeInsets.symmetric(
+                            horizontal: 10, vertical: 12),
+                        suffixIcon:
+                            const Icon(Icons.location_on, color: Colors.grey),
+                        hintText: getLocationHintText(),
                       ),
                     ),
                     SizedBox(height: screenHeight * 0.015),
 
-                    // Step 3: Delivery Address
+                    // Step 4: Commodity
                     const Text(
-                      'DELIVERY ADDRESS:',
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontWeight: FontWeight.w400,
-                        fontSize: 14,
-                      ),
-                    ),
-                    const SizedBox(height: 6),
-                    TextFormField(
-                      controller: deliveryAddressController,
-                      decoration: const InputDecoration(
-                        border: OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.grey),
-                        ),
-                        contentPadding:
-                            EdgeInsets.symmetric(horizontal: 10, vertical: 12),
-                        suffixIcon: Icon(Icons.location_on, color: Colors.grey),
-                      ),
-                    ),
-                    SizedBox(height: screenHeight * 0.015),
-
-                    // Step 4: Postal Code for Delivery Address
-                    const Text(
-                      'POSTAL CODE:',
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontWeight: FontWeight.w400,
-                        fontSize: 14,
-                      ),
-                    ),
-                    const SizedBox(height: 6),
-                    TextFormField(
-                      controller: postalCodeController,
-                      decoration: const InputDecoration(
-                        border: OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.grey),
-                        ),
-                        contentPadding:
-                            EdgeInsets.symmetric(horizontal: 10, vertical: 12),
-                      ),
-                    ),
-                    SizedBox(height: screenHeight * 0.015),
-
-                    // Step 5: Moving Date & Time
-                    const Text(
-                      'MOVING DATE & TIME:',
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontWeight: FontWeight.w400,
-                        fontSize: 14,
-                      ),
-                    ),
-                    const SizedBox(height: 6),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              const Text(
-                                'DATE:',
-                                style: TextStyle(
-                                  color: Colors.black,
-                                  fontWeight: FontWeight.w400,
-                                  fontSize: 14,
-                                ),
-                              ),
-                              const SizedBox(height: 6),
-                              Container(
-                                height: 45,
-                                child: OutlinedButton(
-                                  onPressed: () => _selectDate(context),
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Text(
-                                        selectedDate == null
-                                            ? 'Select Date'
-                                            : '${selectedDate!.day}/${selectedDate!.month}/${selectedDate!.year}',
-                                        style: const TextStyle(
-                                            color: Colors.black),
-                                      ),
-                                      const Icon(Icons.calendar_today,
-                                          size: 18),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        SizedBox(width: screenWidth * 0.03),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              const Text(
-                                'TIME:',
-                                style: TextStyle(
-                                  color: Colors.black,
-                                  fontWeight: FontWeight.w400,
-                                  fontSize: 14,
-                                ),
-                              ),
-                              const SizedBox(height: 6),
-                              Container(
-                                height: 45,
-                                child: OutlinedButton(
-                                  onPressed: () => _selectTime(context),
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Text(
-                                        selectedTime == null
-                                            ? 'Select Time'
-                                            : selectedTime!.format(context),
-                                        style: const TextStyle(
-                                            color: Colors.black),
-                                      ),
-                                      const Icon(Icons.access_time, size: 18),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                    SizedBox(height: screenHeight * 0.015),
-
-                    // Step 6: Contact Person
-                    const Text(
-                      'CONTACT PERSON:',
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontWeight: FontWeight.w400,
-                        fontSize: 14,
-                      ),
-                    ),
-                    const SizedBox(height: 6),
-                    TextFormField(
-                      controller: contactPersonController,
-                      decoration: const InputDecoration(
-                        border: OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.grey),
-                        ),
-                        contentPadding:
-                            EdgeInsets.symmetric(horizontal: 10, vertical: 12),
-                        suffixIcon: Icon(Icons.person, color: Colors.grey),
-                      ),
-                    ),
-                    SizedBox(height: screenHeight * 0.015),
-
-                    // Step 7: Mobile Number
-                    const Text(
-                      'MOBILE NUMBER:',
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontWeight: FontWeight.w400,
-                        fontSize: 14,
-                      ),
-                    ),
-                    const SizedBox(height: 6),
-                    TextFormField(
-                      controller: mobileNumberController,
-                      keyboardType: TextInputType.phone,
-                      decoration: const InputDecoration(
-                        border: OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.grey),
-                        ),
-                        contentPadding:
-                            EdgeInsets.symmetric(horizontal: 10, vertical: 12),
-                        suffixIcon: Icon(Icons.phone, color: Colors.grey),
-                      ),
-                    ),
-                    SizedBox(height: screenHeight * 0.015),
-
-                    // Step 8: Commodity Description
-                    const Text(
-                      'COMMODITY DESCRIPTION:',
+                      'COMMODITY:',
                       style: TextStyle(
                         color: Colors.black,
                         fontWeight: FontWeight.w400,
@@ -472,13 +290,14 @@ class _LandrelocationformState extends State<Landrelocationform> {
                         ),
                         contentPadding:
                             EdgeInsets.symmetric(horizontal: 10, vertical: 12),
+                        hintText: 'Enter Commodity Description',
                       ),
                     ),
                     SizedBox(height: screenHeight * 0.015),
 
-                    // Step 9: Number of Cargo Packages
+                    // Step 5: Cargo Weight
                     const Text(
-                      'NUMBER OF CARGO PACKAGES:',
+                      'CARGO WEIGHT:',
                       style: TextStyle(
                         color: Colors.black,
                         fontWeight: FontWeight.w400,
@@ -487,7 +306,7 @@ class _LandrelocationformState extends State<Landrelocationform> {
                     ),
                     const SizedBox(height: 6),
                     TextFormField(
-                      controller: cargoPackagesController,
+                      controller: cargoWeightController,
                       keyboardType: TextInputType.number,
                       decoration: const InputDecoration(
                         border: OutlineInputBorder(
@@ -495,13 +314,14 @@ class _LandrelocationformState extends State<Landrelocationform> {
                         ),
                         contentPadding:
                             EdgeInsets.symmetric(horizontal: 10, vertical: 12),
+                        hintText: 'Enter Weight (kg)',
                       ),
                     ),
                     SizedBox(height: screenHeight * 0.015),
 
-                    // Step 10: Total Weight
+                    // Step 6: Total Packages
                     const Text(
-                      'TOTAL WEIGHT (KG):',
+                      'TOTAL PACKAGES:',
                       style: TextStyle(
                         color: Colors.black,
                         fontWeight: FontWeight.w400,
@@ -510,7 +330,7 @@ class _LandrelocationformState extends State<Landrelocationform> {
                     ),
                     const SizedBox(height: 6),
                     TextFormField(
-                      controller: totalWeightController,
+                      controller: totalPackagesController,
                       keyboardType: TextInputType.number,
                       decoration: const InputDecoration(
                         border: OutlineInputBorder(
@@ -518,13 +338,14 @@ class _LandrelocationformState extends State<Landrelocationform> {
                         ),
                         contentPadding:
                             EdgeInsets.symmetric(horizontal: 10, vertical: 12),
+                        hintText: 'Enter Total Packages',
                       ),
                     ),
                     SizedBox(height: screenHeight * 0.015),
 
-                    // Step 11: Loading Details
+                    // Step 7: Loading Time & Date
                     const Text(
-                      'LOADING DETAILS:',
+                      'LOADING TIME & DATE:',
                       style: TextStyle(
                         color: Colors.black,
                         fontWeight: FontWeight.w400,
@@ -532,94 +353,31 @@ class _LandrelocationformState extends State<Landrelocationform> {
                       ),
                     ),
                     const SizedBox(height: 6),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const Text(
-                          'LOADING TYPE:',
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontWeight: FontWeight.w400,
-                            fontSize: 14,
-                          ),
+                    TextFormField(
+                      controller: loadingTimeDateController,
+                      readOnly: true,
+                      decoration: const InputDecoration(
+                        border: OutlineInputBorder(
+                          borderSide: BorderSide(color: Colors.grey),
                         ),
-                        const SizedBox(height: 6),
-                        DropdownButtonFormField<String>(
-                          decoration: const InputDecoration(
-                            border: OutlineInputBorder(
-                              borderSide: BorderSide(color: Colors.grey),
-                            ),
-                            contentPadding: EdgeInsets.symmetric(
-                                horizontal: 10, vertical: 12),
-                          ),
-                          value: selectedLoadingType,
-                          hint: const Text('Select Loading Type'),
-                          isExpanded: true,
-                          items: ['Manual', 'Forklift']
-                              .map((String value) => DropdownMenuItem<String>(
-                                    value: value,
-                                    child: Text(value),
-                                  ))
-                              .toList(),
-                          onChanged: (newValue) {
-                            setState(() {
-                              selectedLoadingType = newValue;
-                            });
-                          },
-                        ),
-                        SizedBox(height: screenHeight * 0.015),
-                        const Text(
-                          'CONTACT PERSON NUMBER FOR LOADING:',
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontWeight: FontWeight.w400,
-                            fontSize: 14,
-                          ),
-                        ),
-                        const SizedBox(height: 6),
-                        TextFormField(
-                          controller: loadingContactPersonController,
-                          keyboardType: TextInputType.phone,
-                          decoration: const InputDecoration(
-                            border: OutlineInputBorder(
-                              borderSide: BorderSide(color: Colors.grey),
-                            ),
-                            contentPadding: EdgeInsets.symmetric(
-                                horizontal: 10, vertical: 12),
-                            suffixIcon: Icon(Icons.phone, color: Colors.grey),
-                          ),
-                        ),
-                        SizedBox(height: screenHeight * 0.015),
-                        const Text(
-                          'CONTACT PERSON NUMBER FOR DELIVERY:',
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontWeight: FontWeight.w400,
-                            fontSize: 14,
-                          ),
-                        ),
-                        const SizedBox(height: 6),
-                        TextFormField(
-                          controller: deliveryContactPersonController,
-                          keyboardType: TextInputType.phone,
-                          decoration: const InputDecoration(
-                            border: OutlineInputBorder(
-                              borderSide: BorderSide(color: Colors.grey),
-                            ),
-                            contentPadding: EdgeInsets.symmetric(
-                                horizontal: 10, vertical: 12),
-                            suffixIcon: Icon(Icons.phone, color: Colors.grey),
-                          ),
-                        ),
-                      ],
+                        contentPadding:
+                            EdgeInsets.symmetric(horizontal: 10, vertical: 12),
+                        suffixIcon:
+                            Icon(Icons.calendar_today, color: Colors.grey),
+                      ),
+                      onTap: () async {
+                        await _selectDate(context);
+                        if (selectedDate != null && selectedTime != null)
+                          return;
+                        await _selectTime(context);
+                      },
                     ),
                     SizedBox(height: screenHeight * 0.015),
 
-                    // Step 12: Dynamic Container Size Selection (only for containers)
-                    if (selectedVehicleService != null && 
-                        (selectedVehicleService!.contains('Container') || selectedVehicleService == 'GCC Truck')) ...[
+                    // Step 8: Cargo Commercial Rate (only for GCC)
+                    if (selectedTransportType == 'GCC') ...[
                       const Text(
-                        'SELECT CONTAINER SIZE:',
+                        'CARGO COMMERCIAL RATE:',
                         style: TextStyle(
                           color: Colors.black,
                           fontWeight: FontWeight.w400,
@@ -627,39 +385,49 @@ class _LandrelocationformState extends State<Landrelocationform> {
                         ),
                       ),
                       const SizedBox(height: 6),
-                      Container(
-                        constraints:
-                            BoxConstraints(maxHeight: screenHeight * 0.25),
-                        child: DropdownButtonFormField<String>(
-                          decoration: const InputDecoration(
-                            border: OutlineInputBorder(
-                              borderSide: BorderSide(color: Colors.grey),
-                            ),
-                            contentPadding: EdgeInsets.symmetric(
-                                horizontal: 10, vertical: 12),
+                      TextFormField(
+                        controller: cargoCommercialRateController,
+                        keyboardType: TextInputType.number,
+                        decoration: const InputDecoration(
+                          border: OutlineInputBorder(
+                            borderSide: BorderSide(color: Colors.grey),
                           ),
-                          value: selectedContainerSize,
-                          hint: const Text('Select Container Size'),
-                          isExpanded: true,
-                          items: ['20ft', '40ft']
-                              .map((String value) => DropdownMenuItem<String>(
-                                    value: value,
-                                    child: Text(value),
-                                  ))
-                              .toList(),
-                          onChanged: (newValue) {
-                            setState(() {
-                              selectedContainerSize = newValue;
-                            });
-                          },
+                          contentPadding: EdgeInsets.symmetric(
+                              horizontal: 10, vertical: 12),
+                          hintText: 'Enter Commercial Rate',
                         ),
                       ),
                       SizedBox(height: screenHeight * 0.015),
                     ],
 
-                    // Step 13: Contact Details for Rates
+                    // Step 9: Cargo Insurance (only for GCC)
+                    if (selectedTransportType == 'GCC') ...[
+                      const Text(
+                        'CARGO INSURANCE:',
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontWeight: FontWeight.w400,
+                          fontSize: 14,
+                        ),
+                      ),
+                      const SizedBox(height: 6),
+                      TextFormField(
+                        controller: cargoInsuranceController,
+                        decoration: const InputDecoration(
+                          border: OutlineInputBorder(
+                            borderSide: BorderSide(color: Colors.grey),
+                          ),
+                          contentPadding: EdgeInsets.symmetric(
+                              horizontal: 10, vertical: 12),
+                          hintText: 'Enter Insurance Details',
+                        ),
+                      ),
+                      SizedBox(height: screenHeight * 0.015),
+                    ],
+
+                    // Step 8 for UAE, Step 10 for GCC: Contact Person Number for Loading
                     const Text(
-                      'CONTACT DETAILS FOR RATES:',
+                      'CONTACT PERSON NUMBER FOR LOADING:',
                       style: TextStyle(
                         color: Colors.black,
                         fontWeight: FontWeight.w400,
@@ -668,19 +436,7 @@ class _LandrelocationformState extends State<Landrelocationform> {
                     ),
                     const SizedBox(height: 6),
                     TextFormField(
-                      controller: emailController,
-                      decoration: const InputDecoration(
-                        border: OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.grey),
-                        ),
-                        contentPadding:
-                            EdgeInsets.symmetric(horizontal: 10, vertical: 12),
-                        hintText: 'Enter Email for Rates',
-                      ),
-                    ),
-                    SizedBox(height: screenHeight * 0.015),
-                    TextFormField(
-                      controller: whatsappController,
+                      controller: contactPersonLoadingController,
                       keyboardType: TextInputType.phone,
                       decoration: const InputDecoration(
                         border: OutlineInputBorder(
@@ -688,12 +444,36 @@ class _LandrelocationformState extends State<Landrelocationform> {
                         ),
                         contentPadding:
                             EdgeInsets.symmetric(horizontal: 10, vertical: 12),
-                        hintText: 'Enter WhatsApp (e.g., 058-823-5278)',
+                        suffixIcon: Icon(Icons.phone, color: Colors.grey),
                       ),
                     ),
                     SizedBox(height: screenHeight * 0.015),
 
-                    // Step 14: Book a Survey or Get Immediate Quote
+                    // Step 9 for UAE, Step 11 for GCC: Contact Person Number for Delivery
+                    const Text(
+                      'CONTACT PERSON NUMBER FOR DELIVERY:',
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontWeight: FontWeight.w400,
+                        fontSize: 14,
+                      ),
+                    ),
+                    const SizedBox(height: 6),
+                    TextFormField(
+                      controller: contactPersonDeliveryController,
+                      keyboardType: TextInputType.phone,
+                      decoration: const InputDecoration(
+                        border: OutlineInputBorder(
+                          borderSide: BorderSide(color: Colors.grey),
+                        ),
+                        contentPadding:
+                            EdgeInsets.symmetric(horizontal: 10, vertical: 12),
+                        suffixIcon: Icon(Icons.phone, color: Colors.grey),
+                      ),
+                    ),
+                    SizedBox(height: screenHeight * 0.015),
+
+                    // Step 10 for UAE, Step 12 for GCC: Choose an Option
                     const Text(
                       'CHOOSE AN OPTION:',
                       style: TextStyle(
@@ -727,11 +507,11 @@ class _LandrelocationformState extends State<Landrelocationform> {
                       ],
                     ),
                     if (isSurveyNeeded == true)
-                      Padding(
-                        padding: const EdgeInsets.only(top: 8.0),
+                      const Padding(
+                        padding: EdgeInsets.only(top: 8.0),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
-                          children: const [
+                          children: [
                             Text(
                               'Contact Admin for Survey:',
                               style: TextStyle(
@@ -754,7 +534,7 @@ class _LandrelocationformState extends State<Landrelocationform> {
                       ),
                     SizedBox(height: screenHeight * 0.015),
 
-                    // Step 15: Buttons (Get a Quote or Book a Survey)
+                    // Step 11 for UAE, Step 13 for GCC: Buttons
                     Center(
                       child: Column(
                         children: [

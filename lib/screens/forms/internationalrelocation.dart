@@ -13,7 +13,7 @@ class _InternationalRelocationScreenState
     extends State<InternationalRelocationScreen> {
   String? selectedRelocationType;
   String? selectedFragileItems;
-  String? selectedTransportMethod; // Added for transport method selection
+  String? selectedTransportMethod;
   DateTime? selectedDate;
   TimeOfDay? selectedTime;
   bool? isSurveyNeeded = false;
@@ -64,6 +64,21 @@ class _InternationalRelocationScreenState
     }
   }
 
+  // Validate form before submission
+  bool _validateForm() {
+    if (movingFromController.text.isEmpty ||
+        movingToController.text.isEmpty ||
+        selectedTransportMethod == null ||
+        mobileController.text.isEmpty ||
+        emailController.text.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Please fill all required fields')),
+      );
+      return false;
+    }
+    return true;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -105,10 +120,10 @@ class _InternationalRelocationScreenState
               const SizedBox(height: 16),
               // Step 1: Moving From (Area + City + Country)
               const Text(
-                'MOVING FROM (AREA + CITY + COUNTRY):',
+                'MOVING FROM (AREA + CITY + COUNTRY): *',
                 style: TextStyle(
                     color: Colors.black,
-                    fontWeight: FontWeight.w400,
+                    fontWeight: FontWeight.w600,
                     fontSize: 14),
               ),
               const SizedBox(height: 8),
@@ -126,10 +141,10 @@ class _InternationalRelocationScreenState
               const SizedBox(height: 16),
               // Step 2: Moving To (Area + City + Country)
               const Text(
-                'MOVING TO (AREA + CITY + COUNTRY):',
+                'MOVING TO (AREA + CITY + COUNTRY): *',
                 style: TextStyle(
                     color: Colors.black,
-                    fontWeight: FontWeight.w400,
+                    fontWeight: FontWeight.w600,
                     fontSize: 14),
               ),
               const SizedBox(height: 8),
@@ -147,23 +162,24 @@ class _InternationalRelocationScreenState
               const SizedBox(height: 16),
               // Step 3: Transport Method Selection
               const Text(
-                'TRANSPORT METHOD:',
+                'TRANSPORT METHOD: *',
                 style: TextStyle(
                     color: Colors.black,
-                    fontWeight: FontWeight.w400,
-                    fontSize: 14),
+                    fontWeight: FontWeight.w600,
+                    fontSize: 16),
               ),
               const SizedBox(height: 8),
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
                 decoration: BoxDecoration(
-                  border: Border.all(color: Colors.grey),
+                  border: Border.all(color: Colors.grey), // Match TextFormField
                   borderRadius: BorderRadius.circular(4),
                 ),
                 child: DropdownButtonHideUnderline(
                   child: DropdownButton<String>(
                     value: selectedTransportMethod,
-                    hint: const Text('Select Transport Method'),
+                    hint: const Text('Select Transport Method (Required)'),
                     isExpanded: true,
                     items: const [
                       DropdownMenuItem(
@@ -177,22 +193,22 @@ class _InternationalRelocationScreenState
                         ),
                       ),
                       DropdownMenuItem(
-                        value: 'Land',
-                        child: Row(
-                          children: [
-                            Icon(Icons.local_shipping, color: Colors.green),
-                            SizedBox(width: 8),
-                            Text('Move by Land'),
-                          ],
-                        ),
-                      ),
-                      DropdownMenuItem(
                         value: 'Sea',
                         child: Row(
                           children: [
                             Icon(Icons.directions_boat, color: Colors.teal),
                             SizedBox(width: 8),
                             Text('Move by Sea'),
+                          ],
+                        ),
+                      ),
+                      DropdownMenuItem(
+                        value: 'Road',
+                        child: Row(
+                          children: [
+                            Icon(Icons.local_shipping, color: Colors.green),
+                            SizedBox(width: 8),
+                            Text('Move by Road'),
                           ],
                         ),
                       ),
@@ -208,10 +224,10 @@ class _InternationalRelocationScreenState
               const SizedBox(height: 16),
               // Step 4: Mobile Number + Email Address
               const Text(
-                'MOBILE NUMBER:',
+                'MOBILE NUMBER: *',
                 style: TextStyle(
                     color: Colors.black,
-                    fontWeight: FontWeight.w400,
+                    fontWeight: FontWeight.w600,
                     fontSize: 14),
               ),
               const SizedBox(height: 8),
@@ -228,10 +244,10 @@ class _InternationalRelocationScreenState
               ),
               const SizedBox(height: 16),
               const Text(
-                'EMAIL ADDRESS:',
+                'EMAIL ADDRESS: *',
                 style: TextStyle(
                     color: Colors.black,
-                    fontWeight: FontWeight.w400,
+                    fontWeight: FontWeight.w600,
                     fontSize: 14),
               ),
               const SizedBox(height: 8),
@@ -517,10 +533,39 @@ class _InternationalRelocationScreenState
                         ),
                       ),
                       onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => Success()),
-                        );
+                        if (_validateForm()) {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => Success(
+                                formData: {
+                                  'movingFrom': movingFromController.text,
+                                  'movingTo': movingToController.text,
+                                  'transportMethod': selectedTransportMethod,
+                                  'mobile': mobileController.text,
+                                  'email': emailController.text,
+                                  'movingDate': selectedDate,
+                                  'movingTime': selectedTime,
+                                  'items': {
+                                    'furniture': furniture,
+                                    'electronics': electronics,
+                                    'kitchenware': kitchenware,
+                                    'clothing': clothing,
+                                    'documents': documents,
+                                    'appliances': appliances,
+                                    'books': books,
+                                    'personalItems': personalItems,
+                                    'other':
+                                        other ? otherController.text : null,
+                                  },
+                                  'fragileItems': fragileItemsController.text,
+                                  'cargoMedia': cargoMediaController.text,
+                                  'isSurveyNeeded': isSurveyNeeded,
+                                },
+                              ),
+                            ),
+                          );
+                        }
                       },
                       child: const Center(
                         child: Text(
@@ -544,7 +589,9 @@ class _InternationalRelocationScreenState
                           ),
                         ),
                         onPressed: () {
-                          // Add logic for booking a survey
+                          if (_validateForm()) {
+                            // Add logic for booking a survey
+                          }
                         },
                         child: const Center(
                           child: Text(
@@ -597,6 +644,26 @@ class _InternationalRelocationScreenState
         const SizedBox(width: 8),
         Flexible(child: Text(label)),
       ],
+    );
+  }
+}
+
+// Success screen placeholder (update as needed)
+class Success extends StatelessWidget {
+  final Map<String, dynamic>? formData;
+
+  const Success({super.key, this.formData});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text('Submission Successful')),
+      body: Center(
+        child: Text(
+          'Form Submitted!\nTransport Method: ${formData?['transportMethod'] ?? 'Not selected'}',
+          textAlign: TextAlign.center,
+        ),
+      ),
     );
   }
 }

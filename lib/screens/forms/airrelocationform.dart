@@ -14,31 +14,41 @@ class _FormScreenState extends State<FormScreen> {
   // Controllers for form fields
   final TextEditingController movingFromController = TextEditingController();
   final TextEditingController movingToController = TextEditingController();
-  final TextEditingController airportOfLoadingController = TextEditingController();
-  final TextEditingController airportOfDischargeController = TextEditingController();
-  
+  final TextEditingController airportOfLoadingController =
+      TextEditingController();
+  final TextEditingController airportOfDischargeController =
+      TextEditingController();
+
   // Collection address controllers
-  final TextEditingController collectionAddressController = TextEditingController();
-  final TextEditingController collectionPostalCodeController = TextEditingController();
-  
+  final TextEditingController collectionAddressController =
+      TextEditingController();
+  final TextEditingController collectionPostalCodeController =
+      TextEditingController();
+
   // Commodity controllers
   final TextEditingController commodityController = TextEditingController();
   final TextEditingController hsCodeController = TextEditingController();
-  
+
   // Cargo details controllers
-  final TextEditingController numberOfPackagesController = TextEditingController();
+  final TextEditingController numberOfPackagesController =
+      TextEditingController();
   final TextEditingController lengthController = TextEditingController();
   final TextEditingController widthController = TextEditingController();
   final TextEditingController heightController = TextEditingController();
   final TextEditingController grossWeightController = TextEditingController();
-  
+  final TextEditingController netWeightController = TextEditingController();
+  final TextEditingController volumeWeightController = TextEditingController();
+
   // Delivery address controllers
-  final TextEditingController cargoDeliveryAddressController = TextEditingController();
-  final TextEditingController deliveryPostalCodeController = TextEditingController();
-  
+  final TextEditingController cargoDeliveryAddressController =
+      TextEditingController();
+  final TextEditingController deliveryPostalCodeController =
+      TextEditingController();
+
   // Contact controllers
   final TextEditingController emailController = TextEditingController();
-  final TextEditingController whatsappController = TextEditingController();
+  final TextEditingController whatsappController =
+      TextEditingController(text: '052-823-5278');
 
   @override
   Widget build(BuildContext context) {
@@ -208,7 +218,6 @@ class _FormScreenState extends State<FormScreen> {
                     ),
                     SizedBox(height: screenHeight * 0.015),
 
-                    // Collection Postal Code
                     const Text(
                       'COLLECTION POSTAL CODE:',
                       style: TextStyle(
@@ -254,7 +263,6 @@ class _FormScreenState extends State<FormScreen> {
                     ),
                     SizedBox(height: screenHeight * 0.015),
 
-                    // H.S Code
                     const Text(
                       'H.S CODE:',
                       style: TextStyle(
@@ -278,18 +286,17 @@ class _FormScreenState extends State<FormScreen> {
                     SizedBox(height: screenHeight * 0.015),
 
                     // Step 7: Cargo Details
-                     Text(
+                    Text(
                       'CARGO DETAILS:',
                       style: TextStyle(
                         color: Colors.black,
                         fontWeight: FontWeight.w400,
                         fontSize: 16,
-                        // fon: FontWeight.w600,
                       ),
                     ),
                     SizedBox(height: screenHeight * 0.01),
 
-                    // Number of Packages/Cartons/Pallets
+                    // Step 8: Number of Packages/Cartons/Pallets
                     const Text(
                       'NUMBER OF PACKAGES/CARTONS/PALLETS:',
                       style: TextStyle(
@@ -313,7 +320,7 @@ class _FormScreenState extends State<FormScreen> {
                     ),
                     SizedBox(height: screenHeight * 0.015),
 
-                    // Dimensions of each package/carton/pallet
+                    // Step 9: Dimensions of each package/carton/pallet
                     const Text(
                       'DIMENSIONS OF EACH PACKAGE/CARTON/PALLET (L X W X H IN CM):',
                       style: TextStyle(
@@ -415,7 +422,7 @@ class _FormScreenState extends State<FormScreen> {
                     ),
                     SizedBox(height: screenHeight * 0.015),
 
-                    // Gross Weight of each package/carton/pallet
+                    // Step 10: Gross Weight of each package/carton/pallet
                     const Text(
                       'GROSS WEIGHT OF EACH PACKAGE/CARTON/PALLET (KG):',
                       style: TextStyle(
@@ -439,7 +446,55 @@ class _FormScreenState extends State<FormScreen> {
                     ),
                     SizedBox(height: screenHeight * 0.015),
 
-                    // Step 8: Delivery Address with Postal Code
+                    // Step 11: Net Weight of each package/carton/pallet
+                    const Text(
+                      'NET WEIGHT OF EACH PACKAGE/CARTON/PALLET (KG):',
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontWeight: FontWeight.w400,
+                        fontSize: 14,
+                      ),
+                    ),
+                    const SizedBox(height: 6),
+                    TextFormField(
+                      controller: netWeightController,
+                      keyboardType: TextInputType.number,
+                      decoration: const InputDecoration(
+                        border: OutlineInputBorder(
+                          borderSide: BorderSide(color: Colors.grey),
+                        ),
+                        contentPadding:
+                            EdgeInsets.symmetric(horizontal: 10, vertical: 12),
+                        hintText: 'Enter net weight (in kg)',
+                      ),
+                    ),
+                    SizedBox(height: screenHeight * 0.015),
+
+                    // Step 12: Volume Weight
+                    const Text(
+                      'VOLUME WEIGHT (KG):',
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontWeight: FontWeight.w400,
+                        fontSize: 14,
+                      ),
+                    ),
+                    const SizedBox(height: 6),
+                    TextFormField(
+                      controller: volumeWeightController,
+                      keyboardType: TextInputType.number,
+                      decoration: const InputDecoration(
+                        border: OutlineInputBorder(
+                          borderSide: BorderSide(color: Colors.grey),
+                        ),
+                        contentPadding:
+                            EdgeInsets.symmetric(horizontal: 10, vertical: 12),
+                        hintText: 'Enter volume weight (in kg)',
+                      ),
+                    ),
+                    SizedBox(height: screenHeight * 0.015),
+
+                    // Step 13: Delivery Address with Postal Code
                     const Text(
                       'DELIVERY ADDRESS:',
                       style: TextStyle(
@@ -463,7 +518,6 @@ class _FormScreenState extends State<FormScreen> {
                     ),
                     SizedBox(height: screenHeight * 0.015),
 
-                    // Delivery Postal Code
                     const Text(
                       'DELIVERY POSTAL CODE:',
                       style: TextStyle(
@@ -486,45 +540,9 @@ class _FormScreenState extends State<FormScreen> {
                     ),
                     SizedBox(height: screenHeight * 0.015),
 
-                    // Step 9: Contact Details (Email and WhatsApp for Rates)
-                    const Text(
-                      'CONTACT DETAILS FOR RATES:',
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontWeight: FontWeight.w400,
-                        fontSize: 14,
-                      ),
-                    ),
-                    const SizedBox(height: 6),
-                    TextFormField(
-                      controller: emailController,
-                      decoration: const InputDecoration(
-                        border: OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.grey),
-                        ),
-                        contentPadding:
-                            EdgeInsets.symmetric(horizontal: 10, vertical: 12),
-                        hintText: 'Enter Email for Rates',
-                        suffixIcon: Icon(Icons.email, color: Colors.grey),
-                      ),
-                    ),
-                    SizedBox(height: screenHeight * 0.015),
-                    TextFormField(
-                      controller: whatsappController,
-                      keyboardType: TextInputType.phone,
-                      decoration: const InputDecoration(
-                        border: OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.grey),
-                        ),
-                        contentPadding:
-                            EdgeInsets.symmetric(horizontal: 10, vertical: 12),
-                        hintText: 'Enter WhatsApp (e.g., 058-823-5278)',
-                        suffixIcon: Icon(Icons.phone, color: Colors.grey),
-                      ),
-                    ),
-                    SizedBox(height: screenHeight * 0.015),
+                    // Step 14: OR ... for rates
 
-                    // Step 10: Book a Survey or Get Immediate Quote
+                    // Step 15: Choose an Option (Book a Survey or Get Immediate Quote)
                     const Text(
                       'CHOOSE AN OPTION:',
                       style: TextStyle(
@@ -575,7 +593,7 @@ class _FormScreenState extends State<FormScreen> {
                               style: TextStyle(color: Colors.black),
                             ),
                             Text(
-                              'WhatsApp: 058-823-5278',
+                              'WhatsApp: 052-823-5278',
                               style: TextStyle(color: Colors.black),
                             ),
                           ],
@@ -583,7 +601,7 @@ class _FormScreenState extends State<FormScreen> {
                       ),
                     SizedBox(height: screenHeight * 0.015),
 
-                    // Step 11: Buttons (Get a Quote or Book a Survey)
+                    // Step 16: Buttons (Get a Quote or Book a Survey)
                     Center(
                       child: Column(
                         children: [

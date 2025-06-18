@@ -9,22 +9,17 @@ class Expressdeliveryform extends StatefulWidget {
 }
 
 class _ExpressdeliveryformState extends State<Expressdeliveryform> {
-  // State variables for selections
   String? selectedLocation;
-  String? selectedDeliveryType; // Updated for Delivery Type (Car or Bike)
-  String?
-      selectedDeliveryTime; // Updated for Delivery Time (Same Day or Next Day)
+  String? selectedDeliveryType;
+  String? selectedDeliveryTime;
   String? selectedPickupPoint;
   String? selectedDeliveryPoint;
   String? selectedPackageType;
   String? selectedCommodity;
   String? selectedPackingRequired;
   String? selectedQuantity;
-  bool? isSurveyNeeded = false;
 
-  // Controllers for text fields
   final TextEditingController emailController = TextEditingController();
-  final TextEditingController whatsappController = TextEditingController();
   final TextEditingController weightDimensionController =
       TextEditingController();
 
@@ -67,7 +62,6 @@ class _ExpressdeliveryformState extends State<Expressdeliveryform> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Step 1: Form Title
                 Text(
                   'Express Delivery',
                   style: TextStyle(
@@ -77,8 +71,6 @@ class _ExpressdeliveryformState extends State<Expressdeliveryform> {
                   ),
                 ),
                 SizedBox(height: screenHeight * 0.015),
-
-                // Step 2: Select Location
                 const Text(
                   'Location:',
                   style: TextStyle(
@@ -116,14 +108,12 @@ class _ExpressdeliveryformState extends State<Expressdeliveryform> {
                   onChanged: (newValue) {
                     setState(() {
                       selectedLocation = newValue;
-                      selectedDeliveryType = null; // Reset delivery type
-                      selectedDeliveryTime = null; // Reset delivery time
+                      selectedDeliveryType = null;
+                      selectedDeliveryTime = null;
                     });
                   },
                 ),
                 SizedBox(height: screenHeight * 0.015),
-
-                // Step 3: Delivery Type (if Dubai is selected)
                 if (selectedLocation == 'Dubai')
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -148,7 +138,7 @@ class _ExpressdeliveryformState extends State<Expressdeliveryform> {
                         value: selectedDeliveryType,
                         hint: const Text('Select Delivery Type'),
                         isExpanded: true,
-                        items: ['Car', 'Bike']
+                        items: ['Bike', 'Van']
                             .map((String value) => DropdownMenuItem<String>(
                                   value: value,
                                   child: Text(value),
@@ -163,9 +153,7 @@ class _ExpressdeliveryformState extends State<Expressdeliveryform> {
                       SizedBox(height: screenHeight * 0.015),
                     ],
                   ),
-
-                // Step 4: Delivery Time (if Dubai is selected)
-                if (selectedLocation == 'Dubai')
+                if (selectedLocation == 'Dubai' && selectedDeliveryType != null)
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -204,8 +192,6 @@ class _ExpressdeliveryformState extends State<Expressdeliveryform> {
                       SizedBox(height: screenHeight * 0.015),
                     ],
                   ),
-
-                // Step 5: Pick up Point
                 const Text(
                   'Pick up point:',
                   style: TextStyle(
@@ -247,8 +233,6 @@ class _ExpressdeliveryformState extends State<Expressdeliveryform> {
                   },
                 ),
                 SizedBox(height: screenHeight * 0.015),
-
-                // Step 6: Delivery Point
                 const Text(
                   'Delivery point:',
                   style: TextStyle(
@@ -290,8 +274,6 @@ class _ExpressdeliveryformState extends State<Expressdeliveryform> {
                   },
                 ),
                 SizedBox(height: screenHeight * 0.015),
-
-                // Step 7: Package Type
                 const Text(
                   'Package type:',
                   style: TextStyle(
@@ -325,8 +307,6 @@ class _ExpressdeliveryformState extends State<Expressdeliveryform> {
                   },
                 ),
                 SizedBox(height: screenHeight * 0.015),
-
-                // Step 8: Weight / Dimension
                 const Text(
                   'Weight / Dimension:',
                   style: TextStyle(
@@ -349,8 +329,6 @@ class _ExpressdeliveryformState extends State<Expressdeliveryform> {
                   ),
                 ),
                 SizedBox(height: screenHeight * 0.015),
-
-                // Step 9: Commodity
                 const Text(
                   'Commodity:',
                   style: TextStyle(
@@ -391,8 +369,6 @@ class _ExpressdeliveryformState extends State<Expressdeliveryform> {
                   },
                 ),
                 SizedBox(height: screenHeight * 0.015),
-
-                // Step 10: Packing Required
                 const Text(
                   'Packing required:',
                   style: TextStyle(
@@ -426,8 +402,6 @@ class _ExpressdeliveryformState extends State<Expressdeliveryform> {
                   },
                 ),
                 SizedBox(height: screenHeight * 0.015),
-
-                // Step 11: Quantity
                 const Text(
                   'Quantity:',
                   style: TextStyle(
@@ -461,8 +435,6 @@ class _ExpressdeliveryformState extends State<Expressdeliveryform> {
                   },
                 ),
                 SizedBox(height: screenHeight * 0.015),
-
-                // Step 12: Contact Details (Email and WhatsApp for Rates)
                 const Text(
                   'CONTACT DETAILS FOR RATES:',
                   style: TextStyle(
@@ -484,133 +456,31 @@ class _ExpressdeliveryformState extends State<Expressdeliveryform> {
                   ),
                 ),
                 SizedBox(height: screenHeight * 0.015),
-                TextFormField(
-                  controller: whatsappController,
-                  keyboardType: TextInputType.phone,
-                  decoration: const InputDecoration(
-                    border: OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.grey),
-                    ),
-                    contentPadding:
-                        EdgeInsets.symmetric(horizontal: 10, vertical: 12),
-                    hintText: 'Enter WhatsApp (e.g., 058-823-5278)',
-                  ),
-                ),
-                SizedBox(height: screenHeight * 0.015),
-
-                // Step 13: Book a Survey Option
-                const Text(
-                  'CHOOSE AN OPTION:',
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontWeight: FontWeight.w400,
-                    fontSize: 14,
-                  ),
-                ),
-                const SizedBox(height: 6),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    const Text(
-                      'Not Sure? Book a Survey',
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontWeight: FontWeight.w400,
-                        fontSize: 14,
-                      ),
-                    ),
-                    Switch(
-                      value: isSurveyNeeded ?? false,
-                      onChanged: (value) {
-                        setState(() {
-                          isSurveyNeeded = value;
-                        });
-                      },
-                    ),
-                  ],
-                ),
-                if (isSurveyNeeded == true)
-                  Padding(
-                    padding: const EdgeInsets.only(top: 8.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: const [
-                        Text(
-                          'Contact Admin for Survey:',
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontWeight: FontWeight.w400,
-                            fontSize: 14,
-                          ),
-                        ),
-                        SizedBox(height: 8),
-                        Text(
-                          'Email: admin@faamlink.com',
-                          style: TextStyle(color: Colors.black),
-                        ),
-                        Text(
-                          'WhatsApp: 058-823-5278',
-                          style: TextStyle(color: Colors.black),
-                        ),
-                      ],
-                    ),
-                  ),
-                SizedBox(height: screenHeight * 0.015),
-
-                // Step 14: Buttons (Get a Quote or Book a Survey)
                 Center(
-                  child: Column(
-                    children: [
-                      ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          fixedSize: const Size(300, 45),
-                          backgroundColor: const Color(0xff1D62F0),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                        ),
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) => Success()),
-                          );
-                        },
-                        child: const Center(
-                          child: Text(
-                            'Get Immediate Quote',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 17,
-                              fontWeight: FontWeight.w700,
-                            ),
-                          ),
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      fixedSize: const Size(300, 45),
+                      backgroundColor: const Color(0xff1D62F0),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                    ),
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => Success()),
+                      );
+                    },
+                    child: const Center(
+                      child: Text(
+                        'Get Immediate Quote',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 17,
+                          fontWeight: FontWeight.w700,
                         ),
                       ),
-                      const SizedBox(height: 16),
-                      if (isSurveyNeeded == true)
-                        ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            fixedSize: const Size(300, 45),
-                            backgroundColor: Colors.grey,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(20),
-                            ),
-                          ),
-                          onPressed: () {
-                            // Add logic for booking a survey
-                          },
-                          child: const Center(
-                            child: Text(
-                              'Book a Survey',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 17,
-                                fontWeight: FontWeight.w700,
-                              ),
-                            ),
-                          ),
-                        ),
-                    ],
+                    ),
                   ),
                 ),
                 SizedBox(height: screenHeight * 0.02),
