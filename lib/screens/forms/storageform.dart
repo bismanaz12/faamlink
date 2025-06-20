@@ -19,6 +19,15 @@ class _StorageAndWarehousingScreenState
   DateTime? selectedDate;
   TimeOfDay? selectedTime;
   bool? isSurveyNeeded = false;
+  String? rate;
+  String? palleTize;
+  String? looseCargo;
+  String? selectedRate;
+  String? selectedCargo;
+  String? selectedStorage;
+  String? selectedClimate;
+  String? selectedCargoDescription;
+
 
   // Text controllers for input fields
   final TextEditingController palletController = TextEditingController();
@@ -90,11 +99,73 @@ class _StorageAndWarehousingScreenState
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const Text(
-                'Local Cargo & Warehousing Form',
+                'Storage & Warehousing Form',
                 style: TextStyle(
                     color: Colors.black,
                     fontSize: 43,
                     fontWeight: FontWeight.w700),
+              ),
+              const SizedBox(height: 16),
+                const Text(
+                'TYPE OF CARGO (COMMERCIAL OR PERSONAL):',
+                style: TextStyle(
+                    color: Colors.black,
+                    fontWeight: FontWeight.w400,
+                    fontSize: 14),
+              ),
+              const SizedBox(height: 8),
+              DropdownButtonFormField<String>(
+                decoration: const InputDecoration(
+                  border: OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.grey),
+                  ),
+                  contentPadding:
+                      EdgeInsets.symmetric(horizontal: 10, vertical: 15),
+                ),
+                value: selectedCargoType,
+                hint: const Text('Select Cargo Type'),
+                items: ['Commercial', 'Personal']
+                    .map((String value) => DropdownMenuItem<String>(
+                          value: value,
+                          child: Text(value),
+                        ))
+                    .toList(),
+                onChanged: (newValue) {
+                  setState(() {
+                    selectedCargoType = newValue;
+                  });
+                },
+              ),
+              const SizedBox(height: 16),
+                const Text(
+                'Rates',
+                style: TextStyle(
+                    color: Colors.black,
+                    fontWeight: FontWeight.w400,
+                    fontSize: 14),
+              ),
+              const SizedBox(height: 8),
+              DropdownButtonFormField<String>(
+                decoration: const InputDecoration(
+                  border: OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.grey),
+                  ),
+                  contentPadding:
+                      EdgeInsets.symmetric(horizontal: 10, vertical: 15),
+                ),
+                value: rate,
+                hint: const Text('Select rate'),
+                items: ['1 BHK', '2 BHK']
+                    .map((String value) => DropdownMenuItem<String>(
+                          value: value,
+                          child: Text(value),
+                        ))
+                    .toList(),
+                onChanged: (newValue) {
+                  setState(() {
+                    rate = newValue;
+                  });
+                },
               ),
               const SizedBox(height: 16),
               
@@ -144,168 +215,170 @@ class _StorageAndWarehousingScreenState
               const SizedBox(height: 16),
               
               // Storage/Pickup Location
-              const Text(
-                'PICKUP/STORAGE LOCATION:',
-                style: TextStyle(
-                    color: Colors.black,
-                    fontWeight: FontWeight.w400,
-                    fontSize: 14),
-              ),
-              const SizedBox(height: 8),
-              TextFormField(
-                controller: addressController,
-                maxLines: 2,
-                decoration: const InputDecoration(
-                  border: OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.grey),
-                  ),
-                  contentPadding:
-                      EdgeInsets.symmetric(horizontal: 10, vertical: 15),
-                  hintText: 'Enter Pickup/Storage Location Address',
-                  suffixIcon: Icon(Icons.location_on, color: Colors.grey),
-                ),
-              ),
+              // const Text(
+              //   'PICKUP/STORAGE LOCATION:',
+              //   style: TextStyle(
+              //       color: Colors.black,
+              //       fontWeight: FontWeight.w400,
+              //       fontSize: 14),
+              // ),
+              // const SizedBox(height: 8),
+              // TextFormField(
+              //   controller: addressController,
+              //   maxLines: 2,
+              //   decoration: const InputDecoration(
+              //     border: OutlineInputBorder(
+              //       borderSide: BorderSide(color: Colors.grey),
+              //     ),
+              //     contentPadding:
+              //         EdgeInsets.symmetric(horizontal: 10, vertical: 15),
+              //     hintText: 'Enter Pickup/Storage Location Address',
+              //     suffixIcon: Icon(Icons.location_on, color: Colors.grey),
+              //   ),
+              // ),
               const SizedBox(height: 16),
               
               // Storage Date and Time
-              Row(
-                children: [
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const Text(
-                          'PICKUP/STORAGE DATE:',
-                          style: TextStyle(
-                              color: Colors.black,
-                              fontWeight: FontWeight.w400,
-                              fontSize: 14),
-                        ),
-                        const SizedBox(height: 8),
-                        Container(
-                          height: 50,
-                          child: OutlinedButton(
-                            onPressed: () => _selectDate(context),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(
-                                  selectedDate == null
-                                      ? 'Select Date'
-                                      : '${selectedDate!.day}/${selectedDate!.month}/${selectedDate!.year}',
-                                  style: const TextStyle(color: Colors.black),
-                                ),
-                                const Icon(Icons.calendar_today, size: 20),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(width: 16),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const Text(
-                          'TIME:',
-                          style: TextStyle(
-                              color: Colors.black,
-                              fontWeight: FontWeight.w400,
-                              fontSize: 14),
-                        ),
-                        const SizedBox(height: 8),
-                        Container(
-                          height: 50,
-                          child: OutlinedButton(
-                            onPressed: () => _selectTime(context),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(
-                                  selectedTime == null
-                                      ? 'Select Time'
-                                      : selectedTime!.format(context),
-                                  style: const TextStyle(color: Colors.black),
-                                ),
-                                const Icon(Icons.access_time, size: 20),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
+              // Row(
+              //   children: [
+              //     Expanded(
+              //       child: Column(
+              //         crossAxisAlignment: CrossAxisAlignment.start,
+              //         children: [
+              //           const Text(
+              //             'PICKUP/STORAGE DATE:',
+              //             style: TextStyle(
+              //                 color: Colors.black,
+              //                 fontWeight: FontWeight.w400,
+              //                 fontSize: 14),
+              //           ),
+              //           const SizedBox(height: 8),
+              //           Container(
+              //             height: 50,
+              //             child: OutlinedButton(
+              //               onPressed: () => _selectDate(context),
+              //               child: Row(
+              //                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              //                 children: [
+              //                   Text(
+              //                     selectedDate == null
+              //                         ? 'Select Date'
+              //                         : '${selectedDate!.day}/${selectedDate!.month}/${selectedDate!.year}',
+              //                     style: const TextStyle(color: Colors.black),
+              //                   ),
+              //                   const Icon(Icons.calendar_today, size: 20),
+              //                 ],
+              //               ),
+              //             ),
+              //           ),
+              //         ],
+              //       ),
+              //     ),
+              //     const SizedBox(width: 16),
+              //     Expanded(
+              //       child: Column(
+              //         crossAxisAlignment: CrossAxisAlignment.start,
+              //         children: [
+              //           const Text(
+              //             'TIME:',
+              //             style: TextStyle(
+              //                 color: Colors.black,
+              //                 fontWeight: FontWeight.w400,
+              //                 fontSize: 14),
+              //           ),
+              //           const SizedBox(height: 8),
+              //           Container(
+              //             height: 50,
+              //             child: OutlinedButton(
+              //               onPressed: () => _selectTime(context),
+              //               child: Row(
+              //                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              //                 children: [
+              //                   Text(
+              //                     selectedTime == null
+              //                         ? 'Select Time'
+              //                         : selectedTime!.format(context),
+              //                     style: const TextStyle(color: Colors.black),
+              //                   ),
+              //                   const Icon(Icons.access_time, size: 20),
+              //                 ],
+              //               ),
+              //             ),
+              //           ),
+              //         ],
+              //       ),
+              //     ),
+              //   ],
+              // ),
+          
+          
               const SizedBox(height: 16),
               
               // Local Storage Type
-              const Text(
-                'LOCAL STORAGE TYPE:',
-                style: TextStyle(
-                    color: Colors.black,
-                    fontWeight: FontWeight.w400,
-                    fontSize: 14),
-              ),
-              const SizedBox(height: 8),
-              DropdownButtonFormField<String>(
-                decoration: const InputDecoration(
-                  border: OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.grey),
-                  ),
-                  contentPadding:
-                      EdgeInsets.symmetric(horizontal: 10, vertical: 15),
-                ),
-                value: selectedStorageType,
-                hint: const Text('Select Local Storage Type'),
-                items: ['Warehouse Storage', 'Open Yard Storage', 'Covered Storage', 'Climate Controlled Storage', 'Cold Storage']
-                    .map((String value) => DropdownMenuItem<String>(
-                          value: value,
-                          child: Text(value),
-                        ))
-                    .toList(),
-                onChanged: (newValue) {
-                  setState(() {
-                    selectedStorageType = newValue;
-                  });
-                },
-              ),
-              const SizedBox(height: 16),
+              // const Text(
+              //   'LOCAL STORAGE TYPE:',
+              //   style: TextStyle(
+              //       color: Colors.black,
+              //       fontWeight: FontWeight.w400,
+              //       fontSize: 14),
+              // ),
+              // const SizedBox(height: 8),
+              // DropdownButtonFormField<String>(
+              //   decoration: const InputDecoration(
+              //     border: OutlineInputBorder(
+              //       borderSide: BorderSide(color: Colors.grey),
+              //     ),
+              //     contentPadding:
+              //         EdgeInsets.symmetric(horizontal: 10, vertical: 15),
+              //   ),
+              //   value: selectedStorageType,
+              //   hint: const Text('Select Local Storage Type'),
+              //   items: ['Warehouse Storage', 'Open Yard Storage', 'Covered Storage', 'Climate Controlled Storage', 'Cold Storage']
+              //       .map((String value) => DropdownMenuItem<String>(
+              //             value: value,
+              //             child: Text(value),
+              //           ))
+              //       .toList(),
+              //   onChanged: (newValue) {
+              //     setState(() {
+              //       selectedStorageType = newValue;
+              //     });
+              //   },
+              // ),
+              // const SizedBox(height: 16),
               
               // Climate Control
-              const Text(
-                'CLIMATE CONTROL:',
-                style: TextStyle(
-                    color: Colors.black,
-                    fontWeight: FontWeight.w400,
-                    fontSize: 14),
-              ),
-              const SizedBox(height: 8),
-              DropdownButtonFormField<String>(
-                decoration: const InputDecoration(
-                  border: OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.grey),
-                  ),
-                  contentPadding:
-                      EdgeInsets.symmetric(horizontal: 10, vertical: 15),
-                ),
-                value: selectedClimateControl,
-                hint: const Text('Select Climate Control'),
-                items: ['Required', 'Not Required']
-                    .map((String value) => DropdownMenuItem<String>(
-                          value: value,
-                          child: Text(value),
-                        ))
-                    .toList(),
-                onChanged: (newValue) {
-                  setState(() {
-                    selectedClimateControl = newValue;
-                  });
-                },
-              ),
-              const SizedBox(height: 16),
+              // const Text(
+              //   'CLIMATE CONTROL:',
+              //   style: TextStyle(
+              //       color: Colors.black,
+              //       fontWeight: FontWeight.w400,
+              //       fontSize: 14),
+              // ),
+              // const SizedBox(height: 8),
+              // DropdownButtonFormField<String>(
+              //   decoration: const InputDecoration(
+              //     border: OutlineInputBorder(
+              //       borderSide: BorderSide(color: Colors.grey),
+              //     ),
+              //     contentPadding:
+              //         EdgeInsets.symmetric(horizontal: 10, vertical: 15),
+              //   ),
+              //   value: selectedClimateControl,
+              //   hint: const Text('Select Climate Control'),
+              //   items: ['Required', 'Not Required']
+              //       .map((String value) => DropdownMenuItem<String>(
+              //             value: value,
+              //             child: Text(value),
+              //           ))
+              //       .toList(),
+              //   onChanged: (newValue) {
+              //     setState(() {
+              //       selectedClimateControl = newValue;
+              //     });
+              //   },
+              // ),
+              // const SizedBox(height: 16),
               
               // Local Cargo Details
               const Text(
@@ -332,49 +405,124 @@ class _StorageAndWarehousingScreenState
               
               // CBM Calculation
               const Text(
-                'CBM (CUBIC METER):',
+                'Storage rate per CBM (CUBIC METER):',
                 style: TextStyle(
                     color: Colors.black,
                     fontWeight: FontWeight.w400,
                     fontSize: 14),
               ),
               const SizedBox(height: 8),
-              TextFormField(
-                controller: cbmController,
-                keyboardType: TextInputType.numberWithOptions(decimal: true),
+                DropdownButtonFormField<String>(
                 decoration: const InputDecoration(
                   border: OutlineInputBorder(
                     borderSide: BorderSide(color: Colors.grey),
                   ),
                   contentPadding:
                       EdgeInsets.symmetric(horizontal: 10, vertical: 15),
-                  hintText: 'Enter CBM (e.g., 2.5)',
                 ),
+                value: selectedDuration,
+                hint: const Text('Select Storage Rate'),
+                items: ['AED 1.5 per CBM per day', 'AED 4.5 per CBM per day']
+                    .map((String value) => DropdownMenuItem<String>(
+                          value: value,
+                          child: Text(value),
+                        ))
+                    .toList(),
+                onChanged: (newValue) {
+                  setState(() {
+                    selectedDuration = newValue;
+                  });
+                },
               ),
+              // TextFormField(
+              //   controller: cbmController,
+              //   keyboardType: TextInputType.numberWithOptions(decimal: true),
+              //   decoration: const InputDecoration(
+              //     border: OutlineInputBorder(
+              //       borderSide: BorderSide(color: Colors.grey),
+              //     ),
+              //     contentPadding:
+              //         EdgeInsets.symmetric(horizontal: 10, vertical: 15),
+              //     hintText: 'Enter AED 1.5 per CBM per day or AED 4.5 per CBM per day  (e.g., 1.5)',
+              //   ),
+              // ),
+              const SizedBox(height: 16),
+               const Text(
+                'Handling IN/OUT Charges:',
+                style: TextStyle(
+                    color: Colors.black,
+                    fontWeight: FontWeight.w400,
+                    fontSize: 14),
+              ),
+               const SizedBox(height: 6),
+              // Palletized Cargo Size
+              const Text(
+                'PALLETIZED CARGO ',
+                style: TextStyle(
+                    color: Colors.black,
+                    fontWeight: FontWeight.w400,
+                    fontSize: 14),
+              ),
+              const SizedBox(height: 8),
+                
+              DropdownButtonFormField<String>(
+                decoration: const InputDecoration(
+                  border: OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.grey),
+                  ),
+                  contentPadding:
+                      EdgeInsets.symmetric(horizontal: 10, vertical: 15),
+                ),
+                value: palleTize,
+                hint: const Text('Select'),
+                items: ['AED 12 per CBM handlig in', 'AED 12 per CBM handlig out']
+                    .map((String value) => DropdownMenuItem<String>(
+                          value: value,
+                          child: Text(value),
+                        ))
+                    .toList(),
+                onChanged: (newValue) {
+                  setState(() {
+                    palleTize = newValue;
+                  });
+                },
+              ),
+              const SizedBox(height: 16),
+               const Text(
+                'Loose cargo ',
+                style: TextStyle(
+                    color: Colors.black,
+                    fontWeight: FontWeight.w400,
+                    fontSize: 14),
+              ),
+              const SizedBox(height: 8),
+                
+              DropdownButtonFormField<String>(
+                decoration: const InputDecoration(
+                  border: OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.grey),
+                  ),
+                  contentPadding:
+                      EdgeInsets.symmetric(horizontal: 10, vertical: 15),
+                ),
+                value: looseCargo,
+                hint: const Text('Select'),
+                items: ['AED 600 per 20 ft', 'AED 1100 per 40 ft']
+                    .map((String value) => DropdownMenuItem<String>(
+                          value: value,
+                          child: Text(value),
+                        ))
+                    .toList(),
+                onChanged: (newValue) {
+                  setState(() {
+                    looseCargo = newValue;
+                  });
+                },
+              ),
+              // const SizedBox(height: 16),
               const SizedBox(height: 16),
               
-              // Step 1: Pallet (Handling In/Out Palletized Cargo)
-              const Text(
-                'PALLETIZED CARGO SIZE:',
-                style: TextStyle(
-                    color: Colors.black,
-                    fontWeight: FontWeight.w400,
-                    fontSize: 14),
-              ),
-              const SizedBox(height: 8),
-              TextFormField(
-                controller: palletController, 
-                decoration: const InputDecoration(
-                  border: OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.grey),
-                  ),
-                  contentPadding:
-                      EdgeInsets.symmetric(horizontal: 10, vertical: 15),
-                  hintText: 'Enter Cargo Size (e.g., 20ft / 40ft)',
-                ),
-              ),
-              const SizedBox(height: 16),
-              // Step 2: Weight
+              // Weight
               const Text(
                 'WEIGHT OF CARGO:',
                 style: TextStyle(
@@ -396,9 +544,10 @@ class _StorageAndWarehousingScreenState
                 ),
               ),
               const SizedBox(height: 16),
+              
               // Storage Duration for Local Cargo
               const Text(
-                'LOCAL STORAGE DURATION:',
+                'STORAGE DURATION:',
                 style: TextStyle(
                     color: Colors.black,
                     fontWeight: FontWeight.w400,
@@ -415,7 +564,7 @@ class _StorageAndWarehousingScreenState
                 ),
                 value: selectedDuration,
                 hint: const Text('Select Storage Duration'),
-                items: ['Few Hours', 'Daily', 'Weekly', 'Monthly', 'Quarterly', 'Yearly']
+                items: ['Weekly', 'Monthly']
                     .map((String value) => DropdownMenuItem<String>(
                           value: value,
                           child: Text(value),
@@ -428,9 +577,10 @@ class _StorageAndWarehousingScreenState
                 },
               ),
               const SizedBox(height: 16),
-              // Step 4: Cargo Dimensions (L x W x H) in cm
+              
+              // Cargo Dimensions (L x W x H) in cm
               const Text(
-                'CARGO DIMENSIONS OF EACH PALLET (IN CM):',
+                'Weight OF EACH PALLET (IN CM):',
                 style: TextStyle(
                     color: Colors.black,
                     fontWeight: FontWeight.w400,
@@ -525,38 +675,9 @@ class _StorageAndWarehousingScreenState
                 ],
               ),
               const SizedBox(height: 16),
-              // Step 5: Type of Cargo (Commercial or Personal)
-              const Text(
-                'TYPE OF CARGO (COMMERCIAL OR PERSONAL):',
-                style: TextStyle(
-                    color: Colors.black,
-                    fontWeight: FontWeight.w400,
-                    fontSize: 14),
-              ),
-              const SizedBox(height: 8),
-              DropdownButtonFormField<String>(
-                decoration: const InputDecoration(
-                  border: OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.grey),
-                  ),
-                  contentPadding:
-                      EdgeInsets.symmetric(horizontal: 10, vertical: 15),
-                ),
-                value: selectedCargoType,
-                hint: const Text('Select Cargo Type'),
-                items: ['Commercial', 'Personal']
-                    .map((String value) => DropdownMenuItem<String>(
-                          value: value,
-                          child: Text(value),
-                        ))
-                    .toList(),
-                onChanged: (newValue) {
-                  setState(() {
-                    selectedCargoType = newValue;
-                  });
-                },
-              ),
-              const SizedBox(height: 16),
+              
+              // Type of Cargo (Commercial or Personal)
+            
               
               // Conditional Rate Selection based on Cargo Type
               if (selectedCargoType == 'Personal') ...[
@@ -624,7 +745,7 @@ class _StorageAndWarehousingScreenState
               ],
               const SizedBox(height: 16),
               
-              // Step 7: Book a Survey or Get Quote (with Email/WhatsApp)
+              // Book a Survey or Get Quote (with Email/WhatsApp)
               const Text(
                 'CHOOSE AN OPTION:',
                 style: TextStyle(
@@ -674,14 +795,15 @@ class _StorageAndWarehousingScreenState
                         style: TextStyle(color: Colors.black),
                       ),
                       Text(
-                        'WhatsApp: +1234567890',
+                        'WhatsApp: +923254312',
                         style: TextStyle(color: Colors.black),
                       ),
                     ],
                   ),
                 ),
               const SizedBox(height: 24),
-              // Buttons: Get a Quote or Book a Survey
+              
+              // Buttons: Get a Quote and Book a Survey
               Center(
                 child: Column(
                   children: [
